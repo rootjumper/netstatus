@@ -49,10 +49,15 @@
             <i class="fas fa-sun"></i> Toggle Theme
         </button>
 
-        <!-- Init Button -->
-        <button class="btn btn-primary mb-4" id="init-button">
-            <i class="fas fa-sync-alt"></i> Init Network
-        </button>
+        <!-- Init and Stop Buttons in the Same Row -->
+        <div class="d-flex justify-content-center mb-4">
+            <button class="btn btn-primary me-2" id="init-button" onclick="toggleScan()">
+                <i class="fas fa-sync-alt"></i> Init Network
+            </button>
+            <button class="btn btn-danger" id="stop-button" onclick="stopScan()" style="display:none;">
+                <i class="fas fa-stop"></i> Stop Scan
+            </button>
+        </div>
 
         <!-- Progress Bar for Init Stage -->
         <div class="progress mb-4" id="init-progress" style="display: none;">
@@ -234,6 +239,33 @@
                 const body = document.body;
                 body.classList.toggle('dark-theme');
                 body.classList.toggle('light-theme');
+                body.classList.toggle('black-yellow-theme');
+
+                // Toggle light theme class for cards and buttons
+                document.querySelectorAll('.card').forEach(card => {
+                    card.classList.toggle('light-theme');
+                    card.classList.toggle('black-yellow-theme');
+                });
+                document.querySelectorAll('.btn').forEach(btn => {
+                    btn.classList.toggle('btn-light-theme');
+                    btn.classList.toggle('btn-black-yellow-theme');
+                });
+                document.querySelectorAll('.status-box').forEach(box => {
+                    box.classList.toggle('light-theme');
+                    box.classList.toggle('black-yellow-theme');
+                });
+                document.querySelectorAll('.status-dot').forEach(dot => {
+                    dot.classList.toggle('light-theme');
+                    dot.classList.toggle('black-yellow-theme');
+                });
+                document.querySelectorAll('.status-badge').forEach(badge => {
+                    badge.classList.toggle('light-theme');
+                    badge.classList.toggle('black-yellow-theme');
+                });
+                document.querySelectorAll('.network-card').forEach(card => {
+                    card.classList.toggle('light-theme');
+                    card.classList.toggle('black-yellow-theme');
+                });
             });
         }
 
@@ -442,35 +474,6 @@
         });
     </script>
 
-    <!-- Rename Device -->
-    <script>
-        document.getElementById('rename-device-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const oldName = document.getElementById('old_name').value;
-            const newName = document.getElementById('new_name').value;
-
-            fetch('/rename_device', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ old_name: oldName, new_name: newName }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultDiv = document.getElementById('rename-device-result');
-                if (data.success) {
-                    resultDiv.textContent = 'Device renamed successfully.';
-                } else {
-                    resultDiv.textContent = 'Error: ' + data.message;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    </script>
-
     <!-- telnet -->
     <script>
         // Function to connect to the correct WebSocket server based on the router
@@ -598,6 +601,45 @@
                 }
             });
         });
+    </script>
+
+    <!-- Scan and Stop Buttons -->
+    <!-- <button id="scanButton" onclick="startScan()">Start Scan</button>
+    <button id="stopButton" onclick="stopScan()" style="display:none;">Stop Scan</button> -->
+
+    <script type="text/javascript">
+        var scanning = false;
+
+        function startScan() {
+            scanning = true;
+            document.getElementById('init-button').style.display = 'none';
+            document.getElementById('stop-button').style.display = 'block';
+            document.getElementById('init-progress').style.display = 'block';
+            document.getElementById('init-info').style.display = 'block';
+            // ...existing code to start scanning...
+            socket.emit('init_network');
+        }
+
+        function stopScan() {
+            scanning = false;
+            document.getElementById('init-button').style.display = 'block';
+            document.getElementById('stop-button').style.display = 'none';
+            document.getElementById('init-progress').style.display = 'none';
+            document.getElementById('init-info').style.display = 'none';
+            // Emit a stop scan event to the server
+            socket.emit('stop_scan');
+        }
+
+        function toggleScan() {
+            scanning = !scanning;
+            if (scanning) {
+                startScan();
+            } else {
+                stopScan();
+            }
+        }
+
+        // ...existing code...
     </script>
 </body>
 </html>

@@ -15,10 +15,10 @@ This project allows you to monitor the status of various network routers, track 
 - **Countdown Timer**: View the remaining time until the next ping update.
 - **Subnets Management**: Automatically adds missing subnets to the `network.conf` file using the `route -n` (Linux/macOS) or `route print` (Windows) command to detect network configurations.
 - **Scanning Subnets for Devices**: Scans each subnet for active devices and logs the active IPs found during the scan.
+- **Stop Scanning**: Ability to stop the subnet scanning process at any time.
 - **Logging**: Logs active IPs found during the subnet scan.
 
 ## Missing Features (TBD)
-- **Telnet Interface**: Connect to a router's Telnet interface and interact with it in real-time through the web UI.
 - **WebSocket Communication**: WebSocket server provides real-time updates and handles Telnet connections.
 
 ## Technologies Used

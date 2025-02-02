@@ -67,6 +67,27 @@ body.dark-theme footer {
 
 body.dark-theme .card-body {
     color: #f0f4f8;
+    background-color: #2d2d44; /* Dark background for card body */
+}
+
+body.dark-theme .form-control {
+    background-color: #3a3a55; /* Dark background for form control */
+    color: #f0f4f8; /* Light text color for form control */
+    border: 1px solid #444c6a; /* Border color for form control */
+}
+
+body.dark-theme .form-control::placeholder {
+    color: #b0b3c5; /* Placeholder text color */
+}
+
+body.dark-theme .btn-primary {
+    background-color: #007bff; /* Primary button background color */
+    border-color: #007bff; /* Primary button border color */
+}
+
+body.dark-theme .btn-primary:hover {
+    background-color: #0056b3; /* Primary button hover background color */
+    border-color: #0056b3; /* Primary button hover border color */
 }
 
 body.dark-theme .card-title {
@@ -75,28 +96,28 @@ body.dark-theme .card-title {
 
 /* Button customizations for dark theme */
 button.btn-info, button.btn-warning, button.btn-success {
-    background-color: #007bff;
+    background-color: #6c757d;
     color: white;
     border: none;
 }
 
 button.btn-info:hover, button.btn-warning:hover, button.btn-success:hover {
-    background-color: #0056b3;
+    background-color: #5a6268;
 }
 
 /* Light Theme Styles (Default) */
 body:not(.dark-theme) {
-    background-color: #f0f4f8;
-    color: #333;
+    background-color: #f8f9fa;
+    color: #212529;
 }
 
 body:not(.dark-theme) .status-box {
     background-color: #ffffff;
-    color: #333;
+    color: #212529;
 }
 
 body:not(.dark-theme) .status-up {
-    background-color: #28a745;
+    background-color: #6c757d;
     color: white;
 }
 
@@ -106,31 +127,102 @@ body:not(.dark-theme) .status-down {
 }
 
 body:not(.dark-theme) .ping-log-item {
-    background-color: #ffffff;
-    color: #333;
+    background-color: #6c757d;
+    color: #f0f4f8;
     border: 1px solid #f0f4f8;
 }
 
 body:not(.dark-theme) .accordion-button {
     background-color: #ffffff;
-    color: #333;
+    color: #212529;
     border: 1px solid #f0f4f8;
 }
 
 body:not(.dark-theme) .accordion-button:not(.collapsed) {
-    background-color: #007bff;
+    background-color: #6c757d;
     color: white;
 }
 
 body:not(.dark-theme) .accordion-button:focus {
-    border-color: #007bff;
+    border-color: #6c757d;
 }
 
 body:not(.dark-theme) footer {
-    background-color: #f0f4f8;
-    color: #333;
+    background-color: #f8f9fa;
+    color: #212529;
 }
 
+/* Light theme */
+body.light-theme {
+    background-color: #f8f9fa; /* Light background color */
+    color: #212529; /* Dark text color */
+}
+
+.card.light-theme {
+    background-color: #ffffff; /* White card background */
+    color: #212529; /* Dark text color */
+}
+
+.btn-light-theme {
+    background-color: #ffffff; /* White button background */
+    color: #212529; /* Dark text color */
+    border-color: #ced4da; /* Light border color */
+}
+
+.status-box.light-theme {
+    background-color: #ffffff; /* White status box background */
+    color: #212529; /* Dark text color */
+}
+
+.status-dot.light-theme {
+    color: #28a745; /* Green dot for "Up" status */
+}
+
+.status-badge.light-theme {
+    background-color: #28a745; /* Green badge for "Up" status */
+    color: #ffffff; /* White text color */
+}
+
+.status-badge.light-theme.bg-danger {
+    background-color: #dc3545; /* Red badge for "Down" status */
+    color: #ffffff; /* White text color */
+}
+
+/* Black-Yellow Theme */
+body.black-yellow-theme {
+    background-color: #000000; /* Black background color */
+    color: #f0b90b; /* Yellow text color */
+}
+
+.card.black-yellow-theme {
+    background-color: #1e1e1e; /* Dark card background */
+    color: #f0b90b; /* Yellow text color */
+}
+
+.btn-black-yellow-theme {
+    background-color: #f0b90b; /* Yellow button background */
+    color: #000000; /* Black text color */
+    border-color: #f0b90b; /* Yellow border color */
+}
+
+.status-box.black-yellow-theme {
+    background-color: #1e1e1e; /* Dark status box background */
+    color: #f0b90b; /* Yellow text color */
+}
+
+.status-dot.black-yellow-theme {
+    color: #28a745; /* Green dot for "Up" status */
+}
+
+.status-badge.black-yellow-theme {
+    background-color: #28a745; /* Green badge for "Up" status */
+    color: #ffffff; /* White text color */
+}
+
+.status-badge.black-yellow-theme.bg-danger {
+    background-color: #dc3545; /* Red badge for "Down" status */
+    color: #ffffff; /* White text color */
+}
 
 /* View modes
 body.grid-view .network-card {
@@ -173,7 +265,7 @@ footer {
 }
 
 footer a {
-    color: #f0f4f8;
+    color: #6c757d;
     text-decoration: none;
 }
 
@@ -192,7 +284,7 @@ button:hover {
 
 /* Icons */
 .fas {
-    color: #007bff;
+    color: #6c757d;
 }
 
 .fas.fa-circle {
@@ -216,7 +308,7 @@ button:hover {
 
 /* Title Bar */
 .title-bar {
-    background-color: #007bff;
+    background-color: #6c757d;
     color: white;
     padding: 10px;
     font-size: 1.5rem;
@@ -244,6 +336,14 @@ button:hover {
     justify-content: flex-start; /* Aligns items to the top */
 }
 
+.network-card.light-theme {
+    background-color: #6c757d;
+}
+
+.network-card.black-yellow-theme {
+    background-color: #1e1e1e;
+}
+
 /* Network Card Layout Changes */
 .network-card {
     flex: 1 1 20%;
@@ -264,7 +364,7 @@ button:hover {
     flex-shrink: 0;
 }
 
-.network-card .details {
+network-card .details {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -279,7 +379,7 @@ button:hover {
 .network-card .details .status {
     font-size: 1rem;
     font-weight: bold;
-    color: #007bff;
+    color: #6c757d;
     text-align: right;
 }
 
@@ -341,7 +441,7 @@ button:hover {
 
 #countdown-timer {
     font-size: 1.2rem;
-    color: #007bff;
+    color: #6c757d;
 }
 
 #config-button {
@@ -352,7 +452,7 @@ button:hover {
 
 #config-button i {
     font-size: 1.5rem;
-    color: #007bff;
+    color: #6c757d;
 }
 
 #interval-config {
@@ -368,14 +468,14 @@ button:hover {
 #init-progress-bar {
     width: 0%;
     height: 100%;
-    background-color: #007bff;
+    background-color: #6c757d;
     transition: width 0.5s;
 }
 
 #init-info {
     text-align: center;
     font-size: 1rem;
-    color: #007bff;
+    color: #6c757d;
 }
 
 /* Hide rename device input fields by default */

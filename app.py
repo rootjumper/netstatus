@@ -77,8 +77,12 @@ def ping_ip(ip):
     except Exception as e:
         return None
 
+# Variable to control scanning
+scanning = True
+
 # Function to scan a subnet for active clients
 def scan_subnet(subnet, session_id, scanned_subnets):
+    global scanning
     if subnet in scanned_subnets:
         print(f"Subnet {subnet} already scanned. Skipping...")
         return []
@@ -87,6 +91,8 @@ def scan_subnet(subnet, session_id, scanned_subnets):
     base_ip = ".".join(subnet.split(".")[:3]) + "."
     total_ips = 254
     for i in range(1, 255):
+        if not scanning:
+            break
         ip = base_ip + str(i)
         # Send the current IP being checked and progress to the frontend
         progress = (i / total_ips) * 100
@@ -195,6 +201,8 @@ def get_status():
 
 @app.route('/init_network', methods=['GET'])
 def init_network():
+    global scanning
+    scanning = True
     try:
         # Check OS type
         system = platform.system().lower()
@@ -257,17 +265,23 @@ def init_network():
             active_clients = {}
             session_id = request.args.get('session_id')  # Get the session ID from the request
             for name, subnet in subnets.items():
-                active_clients[name] = scan_subnet(subnet, session_id)
+                if not scanning:
+                    break
+                active_clients[name] = scan_subnet(subnet, session_id, scanned_subnets)
 
             return json.dumps({"subnets": network_config["subnets"], "missing": missing_subnets, "active_clients": active_clients})
+            scanning = False
 
         except FileNotFoundError:
             return json.dumps({"error": "network.conf file not found"})
+            scanning = False
 
     except subprocess.CalledProcessError as e:
         return json.dumps({'error': str(e)})
+        scanning = False
     except Exception as e:
         return json.dumps({'error': str(e)})
+        scanning = False
 
 # Get WebSocket port based on subnet (e.g., 5100 for 192.168.10.x)
 def get_websocket_port(ip_address):
@@ -371,9 +385,11 @@ def index():
 
 @socketio.on('init_network')
 def handle_init_network():
+    global scanning
+    scanning = True
+    scanned_subnets = set()  # Reset scanned subnets for a new scan
     try:
         session_id = request.sid  # Get the session ID for the current client
-        scanned_subnets = set()  # Keep track of scanned subnets
         # Check OS type
         system = platform.system().lower()
 
@@ -384,6 +400,7 @@ def handle_init_network():
             route_output = subprocess.check_output(['route', 'print'], text=True)
         else:
             emit('init_network_response', {'error': 'Unsupported Operating System'}, room=session_id)
+            scanning = False
             return
 
         # Extract subnets from the route command output
@@ -435,17 +452,28 @@ def handle_init_network():
             # Scan each subnet for active clients
             active_clients = {}
             for name, subnet in subnets.items():
+                if not scanning:
+                    break
                 active_clients[name] = scan_subnet(subnet, session_id, scanned_subnets)
 
             emit('init_network_response', {"subnets": network_config["subnets"], "missing": missing_subnets, "active_clients": active_clients}, room=session_id)
+            scanning = False
 
         except FileNotFoundError:
             emit('init_network_response', {"error": "network.conf file not found"}, room=session_id)
+            scanning = False
 
     except subprocess.CalledProcessError as e:
         emit('init_network_response', {'error': str(e)}, room=session_id)
+        scanning = False
     except Exception as e:
         emit('init_network_response', {'error': str(e)}, room=session_id)
+        scanning = False
+
+@socketio.on('stop_scan')
+def handle_stop_scan():
+    global scanning
+    scanning = False
 
 if __name__ == "__main__":
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)
