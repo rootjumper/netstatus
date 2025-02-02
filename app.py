@@ -57,10 +57,14 @@ subnets = load_subnets()
 # Sample structure for storing network status and logs
 statuses = {}
 
+# Lock for synchronizing ping operations
+ping_lock = threading.Lock()
+
 # Function to ping an IP and return the response time
 def ping_ip(ip):
     try:
-        response_time = ping3.ping(ip, 1)
+        with ping_lock:
+            response_time = ping3.ping(ip, 1)
         if response_time is not False:
             return response_time * 1000  # Convert to milliseconds
         else:
@@ -315,7 +319,7 @@ def index():
     return render_template("index.html", statuses=statuses, subnets=subnets)
 
 @socketio.on('init_network')
-def handle_init_network(data):
+def handle_init_network():
     try:
         session_id = request.sid  # Get the session ID for the current client
         scanned_subnets = set()  # Keep track of scanned subnets
