@@ -26,15 +26,15 @@ This project allows you to monitor the status of various network routers, track 
 
 
 2. - **Navigate to the project folder**:
-
-cd network-status-monitoring
+    ```bash
+    cd network-status-monitoring
 
 3. - **Install the required dependencies**:
-
-pip install -r requirements.txt
+    ```bash
+    pip install -r requirements.txt
 
 4. - **Create a network.conf file in the project root if it doesn't already exist. This file should contain subnets in the following format**:
-
+    ```bash
     {
         "subnets": {
             "Wi-Fi Router 1": "192.168.10.1",
@@ -47,7 +47,7 @@ pip install -r requirements.txt
 ## Usage
 
 1. - **Start the Flask App**:
-
+    ```bash
     python app.py
 
 2. - **The application will be available at http://127.0.0.1:5000/. Visit the URL in your browser to view the network status dashboard**.
