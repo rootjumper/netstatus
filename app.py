@@ -29,11 +29,15 @@ default_subnets = {
 # Path to the network.conf file
 network_conf_path = 'network.conf'
 
+# Lock for synchronizing access to network.conf
+subnet_lock = threading.Lock()
+
 # Save updated subnets to network.conf
 def save_subnets(subnets):
     try:
-        with open(network_conf_path, 'w') as conf_file:
-            json.dump({"subnets": subnets}, conf_file, indent=4)
+        with subnet_lock:
+            with open(network_conf_path, 'w') as conf_file:
+                json.dump({"subnets": subnets}, conf_file, indent=4)
     except Exception as e:
         print(f"Error saving to network.conf: {e}")
         
@@ -41,10 +45,11 @@ def save_subnets(subnets):
 def load_subnets():
     if os.path.exists(network_conf_path):
         try:
-            with open(network_conf_path, 'r') as conf_file:
-                network_config = json.load(conf_file)
-                subnets = network_config.get('subnets', {})
-                return subnets
+            with subnet_lock:
+                with open(network_conf_path, 'r') as conf_file:
+                    network_config = json.load(conf_file)
+                    subnets = network_config.get('subnets', {})
+                    return subnets
         except Exception as e:
             print(f"Error loading network.conf: {e}")
             return default_subnets  # Return default if there's an error
@@ -90,6 +95,19 @@ def scan_subnet(subnet, session_id, scanned_subnets):
         if response_time is not None:
             active_clients.append(ip)
             print(f"Found active IP: {ip} with response time: {response_time}ms")
+            
+            # Load the current subnets from the file
+            subnets = load_subnets()
+            
+            # Check if the IP is already in the subnets
+            if ip not in subnets.values():
+                # Generate a generic name for the new IP
+                new_name = f"Device {len(subnets) + 1}"
+                subnets[new_name] = ip
+                
+                # Save the updated subnets back to the network.conf
+                save_subnets(subnets)
+
     scanned_subnets.add(subnet)
     return active_clients
 
