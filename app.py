@@ -313,6 +313,39 @@ def get_subnets():
     """Return list of available routers and their IPs."""
     return jsonify(load_subnets())
 
+@app.route('/rename_device', methods=['POST'])
+def rename_device():
+    try:
+        data = request.get_json()
+        old_name = data.get('old_name')
+        new_name = data.get('new_name')
+
+        # Load the current subnets from the file
+        subnets = load_subnets()
+
+        # Check if the old name exists
+        if old_name not in subnets:
+            return jsonify({"success": False, "message": "Device not found."})
+
+        # Check if the new name already exists
+        if new_name in subnets:
+            return jsonify({"success": False, "message": "New name already exists."})
+
+        # Rename the device in subnets
+        subnets[new_name] = subnets.pop(old_name)
+
+        # Rename the device in statuses
+        if old_name in statuses:
+            statuses[new_name] = statuses.pop(old_name)
+
+        # Save the updated subnets back to the network.conf
+        save_subnets(subnets)
+
+        return jsonify({"success": True})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
+
 @app.route("/")
 def index():
     get_network_status()
