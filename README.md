@@ -28,7 +28,7 @@ This project allows you to monitor the status of various network routers, track 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/rootjumper/netstatus.git .
+   git clone https://github.com/rootjumper/netstatus.git
 
 2. **Navigate to the project folder**:
     ```bash
