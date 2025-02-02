@@ -24,7 +24,6 @@ This project allows you to monitor the status of various network routers, track 
    ```bash
    git clone https://github.com/rootjumper/netstatus.git .
 
-
 2. **Navigate to the project folder**:
     ```bash
     cd netstatus
@@ -57,7 +56,7 @@ This project allows you to monitor the status of various network routers, track 
     Ping logs are updated every 10 seconds with the latest ping results.
     You can interact with each router by clicking on the Telnet button. This will open a small shell window where you can send commands to the router and receive real-time feedback.
 
-4. **Telnet Interface**:
+4. **(TBD)Telnet Interface**:
     Click Telnet to [Router Name] to open a Telnet session.
     You can type commands in the text box, and the results will be shown in real-time.
     To disconnect, simply click the Disconnect button.
