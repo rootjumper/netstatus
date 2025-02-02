@@ -1,4 +1,4 @@
-# Network Status Monitoring with Telnet and WebSocket
+# Network Status Monitoring (with (TBD)Telnet and (TBD)WebSocket)
 
 This project allows you to monitor the status of various network routers, track their ping logs, and even access a Telnet interface for remote interactions. The app uses Flask, Socket.IO, and WebSockets for real-time communication, as well as dynamic updates for network status monitoring.
 
@@ -6,8 +6,8 @@ This project allows you to monitor the status of various network routers, track 
 
 - **Network Status Monitoring**: View the status of multiple Wi-Fi routers, including whether they're up or down.
 - **Real-Time Ping Logs**: Track the ping logs for each router, with timestamps and response times.
-- **Telnet Interface**: Connect to a router's Telnet interface and interact with it in real-time through the web UI.
-- **WebSocket Communication**: WebSocket server provides real-time updates and handles Telnet connections.
+- **(TBD) Telnet Interface**: Connect to a router's Telnet interface and interact with it in real-time through the web UI.
+- **(TBD) WebSocket Communication**: WebSocket server provides real-time updates and handles Telnet connections.
 - **Dynamic Network Updates**: The app checks and updates network status every 10 seconds, displaying the current status for each router.
 - **Subnets Management**: Automatically adds missing subnets to the `network.conf` file using the `route -n` (Linux/macOS) or `route print` (Windows) command to detect network configurations.
 
@@ -22,12 +22,12 @@ This project allows you to monitor the status of various network routers, track 
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/network-status-monitoring.git
+   git clone https://github.com/rootjumper/netstatus.git .
 
 
 2. **Navigate to the project folder**:
     ```bash
-    cd network-status-monitoring
+    cd netstatus
 
 3. **Install the required dependencies**:
     ```bash
