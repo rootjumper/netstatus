@@ -20,20 +20,20 @@ This project allows you to monitor the status of various network routers, track 
 
 ## Installation
 
-1. - **Clone the repository**:
+1. **Clone the repository**:
    ```bash
    git clone https://github.com/your-username/network-status-monitoring.git
 
 
-2. - **Navigate to the project folder**:
+2. **Navigate to the project folder**:
     ```bash
     cd network-status-monitoring
 
-3. - **Install the required dependencies**:
+3. **Install the required dependencies**:
     ```bash
     pip install -r requirements.txt
 
-4. - **Create a network.conf file in the project root if it doesn't already exist. This file should contain subnets in the following format**:
+4. **Create a network.conf file in the project root if it doesn't already exist. This file should contain subnets in the following format**:
     ```bash
     {
         "subnets": {
@@ -46,18 +46,18 @@ This project allows you to monitor the status of various network routers, track 
 
 ## Usage
 
-1. - **Start the Flask App**:
+1. **Start the Flask App**:
     ```bash
     python app.py
 
-2. - **The application will be available at http://127.0.0.1:5000/. Visit the URL in your browser to view the network status dashboard**.
+2. **The application will be available at http://127.0.0.1:5000/. Visit the URL in your browser to view the network status dashboard**.
 
-3. - **Network Status Dashboard**:
+3. **Network Status Dashboard**:
     View the status of all connected routers.
     Ping logs are updated every 10 seconds with the latest ping results.
     You can interact with each router by clicking on the Telnet button. This will open a small shell window where you can send commands to the router and receive real-time feedback.
 
-4. - **Telnet Interface**:
+4. **Telnet Interface**:
     Click Telnet to [Router Name] to open a Telnet session.
     You can type commands in the text box, and the results will be shown in real-time.
     To disconnect, simply click the Disconnect button.
