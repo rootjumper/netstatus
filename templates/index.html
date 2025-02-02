@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Status - freakyit</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- External CSS File -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
+    <style>
+        /* Ensure that the grid stays at the top */
+        #network-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start; /* Aligns items to the top */
+        }
+
+        .network-card {
+            flex: 1 1 30%; /* Makes sure cards take up 30% of the width (adjust as necessary) */
+            margin-bottom: 20px;
+        }
+
+        .network-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Ensure the content starts at the top */
+        }
+
+        .ping-logs .accordion-button {
+            text-align: left; /* Align ping log toggle button left */
+        }
+
+        /* Optional: Add margin-top to ping logs if needed */
+        .ping-logs {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="container text-center">
+        <h1 class="mt-5 mb-4">Network Status - freakyit</h1>
+
+        <!-- Theme Toggle Button -->
+        <button class="btn btn-warning mb-4" id="theme-toggle-btn">
+            <i class="fas fa-sun"></i> Toggle Theme
+        </button>
+
+<!-- Init Button -->
+<button class="btn btn-primary mb-4" id="init-button">
+    <i class="fas fa-sync-alt"></i> Init Network
+</button>
+
+        <!-- Collapsible Form to Add New IP -->
+        <!-- <button class="btn btn-success mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm">
+            <i class="fas fa-plus-circle"></i> Add Network
+        </button> -->
+
+        <!-- Network Status Container -->
+        <div id="network-container" class="row mt-4 grid-view">
+            {% for name, data in statuses.items() %}
+            {% set sanitized_name = name | replace(' ', '_') %}
+            <div id="networkCard{{ sanitized_name }}" class="col-md-4 mb-4 network-card">
+                <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg border rounded-3">
+                    <div class="card-body">
+                        <i class="fas fa-network-wired fa-3x mb-3 d-block mx-auto"></i> <!-- Center Icon -->
+                        <h5 class="card-title">{{ name }}</h5>
+
+                        <!-- Status Information -->
+                        <div class="row">
+                            <div class="col-12">
+                                <p><i class="fas fa-laptop-house"></i> <strong>IP Address:</strong> {{ subnets[name] }}</p>
+                            </div>
+                            <div class="col-12">
+                                <p>
+                                    <i class="fas fa-circle {{ 'text-success' if data.status == 'Up' else 'text-danger' }}"></i> 
+                                    <strong>Status:</strong> 
+                                    <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }}">{{ data.status }}</span>
+                                </p>
+                            </div>
+                            <div class="col-12">
+                                <p><i class="fas fa-calendar-alt"></i> <strong>Up Since:</strong> {{ data.up_since if data.up_since != 'N/A' else 'N/A' }}</p>
+                            </div>
+                            <!-- telnet button -->
+                            <!-- <div class="col-12">
+                                <button class="btn btn-info mt-3" onclick="window.location.href='/telnet/{{ name }}'">Telnet to {{ name }}</button>
+                            </div> -->
+                        </div>
+
+                        <!-- Telnet Commands -->
+                        <!-- <div class="terminal" style="display:contents;">
+                            <div id="output" class="output"></div>
+                            <div class="input-line">
+                                <input id="commandInput" type="text" placeholder="Enter command..." />
+                                <button id="sendCommandBtn">Send</button>
+                            </div>
+                            <button id="disconnectBtn">Disconnect</button>
+                        </div> -->
+
+                        <!-- Ping Logs Section (Collapsible) -->
+                        <div class="ping-logs mt-4">
+                            
+                            <div class="accordion" id="pingLogsAccordion{{ sanitized_name }}">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="pingLogsHeading{{ sanitized_name }}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pingLogsCollapse{{ sanitized_name }}" aria-expanded="false" aria-controls="pingLogsCollapse{{ sanitized_name }}">
+                                            <i class="fas fa-poll"></i> Ping Logs
+                                        </button>
+                                    </h2>
+                                    <div style="background-color: #3a3a55;" id="pingLogsCollapse{{ sanitized_name }}" class="accordion-collapse collapse" aria-labelledby="pingLogsHeading{{ sanitized_name }}" data-bs-parent="#pingLogsAccordion{{ sanitized_name }}">
+                                        <div class="accordion-body" >
+                                            {% for log in data.ping_logs[-10:] | reverse %}
+                                            <div class="ping-log-item d-flex justify-content-between align-items-center mb-3 p-3 border rounded-3">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-clock fa-lg me-2"></i>
+                                                    <strong>{{ log.timestamp }}</strong>
+                                                </div>
+                                                <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.status }}</span>
+                                                <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.response_time }}ms</span>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 freakyit. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Init network button click event
+        const initButton = document.getElementById('init-button');
+        if (initButton) {
+            initButton.addEventListener('click', function() {
+                // Update network UI with new subnets (you can add this inside the initButton event handler)
+                fetch('/init_network')
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Updated Subnets:", data.subnets);
+                        // Here you can update your UI with the new subnets if needed
+                    })
+                    .catch(error => console.error('Error fetching network status:', error));
+                            });
+        }
+
+        // Theme toggle logic
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', function() {
+                const body = document.body;
+                body.classList.toggle('dark-theme');
+                body.classList.toggle('light-theme');
+            });
+        }
+    </script>
+
+    <script>
+        // Function to fetch network status
+        function fetchNetworkStatus() {
+            fetch("/get_status")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Log the raw data to debug the response
+                    console.log('Received data:', data);
+
+                    // Check if the data has router names as keys
+                    if (data && typeof data === 'object') {
+                        updateNetworkUI(data);
+                    } else {
+                        console.error('Invalid data format:', data);
+                    }
+                })
+                .catch(error => console.error("Error fetching network status:", error));
+        }
+
+        // Function to update the UI with new network data
+        function updateNetworkUI(statuses) {
+            
+            // Ensure statuses is an object where keys are router names
+            if (!statuses || typeof statuses !== 'object') {
+                console.error('Invalid statuses data:', statuses);
+                return;
+            }
+
+            // Loop through each router's data (use object keys for router names)
+            Object.keys(statuses).forEach(name => {
+                const data = statuses[name]; // Get the data for the current router
+                const sanitized_name = name.replace(/ /g, "_");
+                const networkCard = document.querySelector(`#networkCard${sanitized_name}`);
+                
+
+                if (networkCard) {
+                    
+                    console.log('networkCard', networkCard);
+                    // Update the network info dynamically
+                    const nameElement = networkCard.querySelector('.network-name');
+                    const pingLogContainer = networkCard.querySelector('.accordion-body');
+                    
+                    console.log('pingLogContainer', pingLogContainer);
+                    if (nameElement) nameElement.textContent = name;
+
+                    // Render ping logs dynamically
+                    // Check if the pingLogContainer exists before attempting to update
+                    if (pingLogContainer) {
+                        // Clear the existing ping logs and insert new ones
+                        pingLogContainer.innerHTML = data.ping_logs.reverse().slice(0, 10).map(log => `
+                            <div class="ping-log-item d-flex justify-content-between align-items-center border rounded-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-clock fa-lg me-2"></i>
+                                    <strong>${log.timestamp}</strong>
+                                </div>
+                                <span class="badge ${log.status === 'Up' ? 'bg-success' : 'bg-danger'}">${log.status}</span>
+                                <span class="badge ${log.status === 'Up' ? 'bg-success' : 'bg-danger'}"> ${log.response_time}ms</span>
+                            </div>
+                        `).join('');
+                    } else {
+                        console.error(`ping-log-container not found for ${name}`);
+                    }
+                }
+            });
+        }
+
+
+        // Fetch network status initially
+        fetchNetworkStatus();
+
+        // Fetch network status every 10 seconds
+        setInterval(fetchNetworkStatus, 10000);
+
+    </script>
+
+    <script>
+        // Function to connect to the correct WebSocket server based on the router
+        async function startTelnet(routerName) {
+            const response = await fetch(`/start_telnet/${routerName}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            const websocketPort = data.websocket_port;
+            const socket = new WebSocket(`ws://localhost:${websocketPort}`);
+            
+            const outputDiv = document.getElementById('output');
+            const commandInput = document.getElementById('commandInput');
+            const sendCommandBtn = document.getElementById('sendCommandBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+
+            // Handle WebSocket messages from the backend (Telnet output)
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                if (data.message) {
+                    outputDiv.textContent += data.message + '\n';  // Append output to terminal
+                    outputDiv.scrollTop = outputDiv.scrollHeight; // Scroll to the latest output
+                }
+            };
+
+            // Send command to the WebSocket server
+            sendCommandBtn.addEventListener('click', function() {
+                const command = commandInput.value.trim();
+                if (command) {
+                    socket.send(JSON.stringify({ command: command }));
+                    commandInput.value = '';  // Clear input after sending
+                }
+            });
+
+            // Handle Disconnect
+            disconnectBtn.addEventListener('click', function() {
+                socket.send(JSON.stringify({ command: 'exit' })); // Send exit command to backend
+                socket.close();
+            });
+
+            // On WebSocket connection open
+            socket.onopen = function() {
+                console.log("WebSocket connected.");
+            };
+
+            // On WebSocket error
+            socket.onerror = function(error) {
+                console.error("WebSocket Error: ", error);
+            };
+
+            // On WebSocket close
+            socket.onclose = function() {
+                console.log("WebSocket connection closed.");
+            };
+        }
+
+        // Example: Start Telnet to "Wi-Fi Router 1"
+        // startTelnet('Wi-Fi Router 2');
+
+    </script>
+
+
+
+    <!-- Bootstrap and FontAwesome JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>

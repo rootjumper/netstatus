@@ -1,0 +1,318 @@
+/* Default light theme */
+body {
+    background-color: #f0f4f8;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+
+/* Dark theme */
+body.dark-theme {
+    background-color: #1e1e2f;
+    color: #f0f4f8;
+}
+
+body.dark-theme .status-box {
+    background-color: #2d2d44;
+    color: #f0f4f8;
+}
+
+body.dark-theme .status-up {
+    background-color: #2d2d44;
+    color: white;
+}
+
+body.dark-theme .status-down {
+    background-color: #dc3545;
+    color: white;
+}
+
+body.dark-theme .ping-log-item {
+    background-color: #3a3a55;
+    color: #f0f4f8;
+    border: 1px solid #444c6a;
+}
+
+body.dark-theme .accordion-button {
+    background-color: #2d2d44;
+    color: #f0f4f8;
+    border: 1px solid #3a3a55;
+}
+
+body.dark-theme .accordion-button:not(.collapsed) {
+    background-color: #2d2d44;
+    color: white;
+}
+
+body.dark-theme .accordion-button:focus {
+    border-color: #33334b;
+}
+
+body.dark-theme .ping-log-item .badge.bg-success {
+    background-color: #28a745;
+}
+
+body.dark-theme .ping-log-item .badge.bg-danger {
+    background-color: #dc3545;
+}
+
+body.dark-theme footer {
+    background-color: #1c1c2e;
+    color: #f0f4f8;
+}
+
+body.dark-theme .card-body {
+    color: #f0f4f8;
+}
+
+body.dark-theme .card-title {
+    color: #f0f4f8;
+}
+
+/* Button customizations for dark theme */
+button.btn-info, button.btn-warning, button.btn-success {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+button.btn-info:hover, button.btn-warning:hover, button.btn-success:hover {
+    background-color: #0056b3;
+}
+
+/* Light Theme Styles (Default) */
+body:not(.dark-theme) {
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+body:not(.dark-theme) .status-box {
+    background-color: #ffffff;
+    color: #333;
+}
+
+body:not(.dark-theme) .status-up {
+    background-color: #28a745;
+    color: white;
+}
+
+body:not(.dark-theme) .status-down {
+    background-color: #dc3545;
+    color: white;
+}
+
+body:not(.dark-theme) .ping-log-item {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #f0f4f8;
+}
+
+body:not(.dark-theme) .accordion-button {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #f0f4f8;
+}
+
+body:not(.dark-theme) .accordion-button:not(.collapsed) {
+    background-color: #007bff;
+    color: white;
+}
+
+body:not(.dark-theme) .accordion-button:focus {
+    border-color: #007bff;
+}
+
+body:not(.dark-theme) footer {
+    background-color: #f0f4f8;
+    color: #333;
+}
+
+
+/* View modes */
+body.grid-view .network-card {
+    display: inline-block;
+    width: 20%;
+    margin: 1%;
+}
+
+body.list-view .network-card {
+    display: block;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.network-card .card {
+    border-radius: 8px;
+}
+
+.status-box {
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Ping log styling */
+.ping-log-item {
+    border-radius: 5px;
+    margin-bottom: 0px;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+footer {
+    text-align: center;
+    padding: 10px;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #f0f4f8;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+button {
+    border-radius: 5px;
+    padding: 10px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+/* Icons */
+.fas {
+    color: #007bff;
+}
+
+.fas.fa-circle {
+    color: #28a745;
+}
+
+.fas.fa-circle-down {
+    color: #dc3545;
+}
+
+/* Theme toggle button style */
+#theme-toggle-btn {
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+#theme-toggle-btn i {
+    font-size: 18px;
+}
+
+/* Title Bar */
+.title-bar {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 8px;
+}
+
+
+/* Ensure that the grid stays at the top */
+#network-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Aligns items to the top */
+}
+
+/* Network Card Layout Changes */
+.network-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    /* background-color: #0056b3; */
+    
+    background-color: #222336;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.network-card .icon {
+    font-size: 2rem;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.network-card .details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.network-card .details .name {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.network-card .details .status {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #007bff;
+    text-align: right;
+}
+
+.network-card .status-up {
+    background-color: #4567b7;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.network-card .status-down {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.card-body {
+    font-size: 1rem;
+}
+
+.card-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 0.9rem;
+}
+
+.card-header {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Collapse and Accordion Styles */
+.accordion-button {
+    font-size: 1rem;
+    padding: 10px 20px;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #4567b7;
+    color: white;
+}
+
+.accordion-button:focus {
+    border-color: #4567b7;
+}
+
+.fas {
+    color: #4567b7;
+}
