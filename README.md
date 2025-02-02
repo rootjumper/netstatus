@@ -64,14 +64,14 @@ This project allows you to monitor the status of various network routers, track 
 ## How It Works
 ### Backend (Python Flask)
 
-**app.py**: The backend is built with Flask, which serves the front-end pages and provides the API routes for updating network statuses and Telnet functionality.
+- **app.py**: The backend is built with Flask, which serves the front-end pages and provides the API routes for updating network statuses and Telnet functionality.
     Network Status: The system checks for the current status of routers every 10 seconds using the ping command, and updates the status dynamically in the front-end.
     Telnet Communication: Using WebSockets, the backend communicates with the front-end, allowing real-time Telnet connections to routers.
     Dynamic Subnet Management: The app uses the route -n command (Linux/macOS) or route print (Windows) to detect current network configurations and update the network.conf file as needed.
 
 ### Frontend (HTML, CSS, JavaScript)
 
-**Network Status Page**: Displays the router status in a grid view, along with recent ping logs (up to the last 10 pings).
+- **Network Status Page**: Displays the router status in a grid view, along with recent ping logs (up to the last 10 pings).
     Ping Logs: Each router has a collapsible section that displays the latest ping logs, including timestamps, status, and response times.
     Telnet Interface: Each router card has a Telnet button that, when clicked, opens a Telnet interface. This allows the user to type and execute commands via a small shell window.
     WebSockets: The front-end uses JavaScript to open WebSocket connections to the backend, sending and receiving real-time updates for both network status and Telnet commands.
