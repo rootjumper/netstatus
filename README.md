@@ -6,10 +6,12 @@ This project allows you to monitor the status of various network routers, track 
 
 - **Network Status Monitoring**: View the status of multiple Wi-Fi routers, including whether they're up or down.
 - **Real-Time Ping Logs**: Track the ping logs for each router, with timestamps and response times.
-- **(TBD) Telnet Interface**: Connect to a router's Telnet interface and interact with it in real-time through the web UI.
-- **(TBD) WebSocket Communication**: WebSocket server provides real-time updates and handles Telnet connections.
 - **Dynamic Network Updates**: The app checks and updates network status every 10 seconds, displaying the current status for each router.
 - **Subnets Management**: Automatically adds missing subnets to the `network.conf` file using the `route -n` (Linux/macOS) or `route print` (Windows) command to detect network configurations.
+
+## Missing Features (TBD)
+- **Telnet Interface**: Connect to a router's Telnet interface and interact with it in real-time through the web UI.
+- **WebSocket Communication**: WebSocket server provides real-time updates and handles Telnet connections.
 
 ## Technologies Used
 
