@@ -2,6 +2,10 @@
 
 This project allows you to monitor the status of various network routers, track their ping logs, and even access a Telnet interface for remote interactions. The app uses Flask, Socket.IO, and WebSockets for real-time communication, as well as dynamic updates for network status monitoring.
 
+## Overview
+
+![Network Status](netstatus.png)
+
 ## Features
 
 - **Network Status Monitoring**: View the status of multiple Wi-Fi routers, including whether they're up or down.
