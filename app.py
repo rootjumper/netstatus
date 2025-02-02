@@ -293,23 +293,30 @@ def start_telnet_session(session_id, router_ip):
     try:
         tn = telnetlib.Telnet(router_ip)
         telnet_sessions[session_id] = tn
-        
+        tn.read_until(b"login: ", timeout=5)
+        tn.write(b"root\n")
+        tn.read_until(b"Password: ", timeout=5)
+        tn.write(b"root\n")
+        tn.read_until(b"#", timeout=5)
+
         # Send a welcome message to the client
         socketio.emit('output', {'message': f"Connected to {router_ip}\nType 'exit' to disconnect."}, room=session_id)
         
         while True:
-            
             # Wait for a command from the client
-            command = socketio.receive(session_id)
-            
+            socketio.sleep(0.1)  # Prevent busy-waiting
+            if session_id not in telnet_sessions:
+                break
+            command = "exit" #telnet_sessions[session_id].get('command')
             if command:
                 tn.write(command.encode('ascii') + b"\n")
+                #telnet_sessions[session_id]['command'] = None  # Clear the command after sending
                 
                 # Get output from the router
                 output = tn.read_very_eager().decode('utf-8')
                 socketio.emit('output', {'message': output}, room=session_id)
                 
-            if command.lower() == 'exit':
+            if command and command.lower() == 'exit':
                 tn.close()
                 del telnet_sessions[session_id]
                 socketio.emit('output', {'message': "Disconnected from router."}, room=session_id)
@@ -319,14 +326,10 @@ def start_telnet_session(session_id, router_ip):
 
 @app.route('/start_telnet/<router_name>')
 def start_telnet(router_name):
+    return jsonify({"message": f"Telnet TBD"}), 200
     """Start a Telnet session."""
     router_ips = load_subnets()
     router_ip = router_ips.get(router_name)
-    # router_ip = None
-    # for router in router_ips:
-    #     if router[0] == router_name:
-    #         router_ip = router[1]
-    #         break
     
     if not router_ip:
         return jsonify({"error": "Router " + router_name + " not found"}), 404
@@ -337,8 +340,18 @@ def start_telnet(router_name):
     # Start the Telnet session in a background thread
     session_id = f"session_{router_name}"
     threading.Thread(target=start_telnet_session, args=(session_id, router_ip)).start()
-    
+
+    # Emit a message to the WebSocket
+    socketio.emit('telnet_started', {'router_name': router_name, 'websocket_port': websocket_port}, namespace='/telnet')
+   
     return jsonify({"message": f"Telnet session started for {router_name}", "websocket_port": websocket_port}), 200
+
+@socketio.on('telnet_command')
+def handle_telnet_command(data):
+    session_id = request.sid
+    command = data.get('command')
+    if session_id in telnet_sessions and command:
+        telnet_sessions[session_id]['command'] = command
 
 @app.route('/get_subnets')
 def get_subnets():
