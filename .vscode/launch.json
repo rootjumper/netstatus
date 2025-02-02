@@ -8,8 +8,26 @@
             "name": "Python Debugger: App",
             "type": "debugpy",
             "request": "launch",
-            "program": "app.py",
-            "console": "integratedTerminal"
+            "program": "${workspaceFolder}/app.py",
+            "console": "integratedTerminal",
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development",
+                "GEVENT_SUPPORT": "True"
+            }
+        },
+        {
+            "name": "Debug App as Root",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/app.py",
+            "console": "integratedTerminal",
+            "sudo": true,
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development",
+                "GEVENT_SUPPORT": "True"
+            }
         }
     ]
 }

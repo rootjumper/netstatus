@@ -49,26 +49,72 @@
             <i class="fas fa-sun"></i> Toggle Theme
         </button>
 
-<!-- Init Button -->
-<button class="btn btn-primary mb-4" id="init-button">
-    <i class="fas fa-sync-alt"></i> Init Network
-</button>
+        <!-- Init Button -->
+        <button class="btn btn-primary mb-4" id="init-button">
+            <i class="fas fa-sync-alt"></i> Init Network
+        </button>
+
+        <!-- Progress Bar for Init Stage -->
+        <div class="progress mb-4" id="init-progress" style="display: none;">
+            <div class="progress-bar" role="progressbar" style="width: 0%;" id="init-progress-bar"></div>
+        </div>
+        <div id="init-info" style="display: none;">
+            <p id="init-info-text"></p>
+        </div>
 
         <!-- Collapsible Form to Add New IP -->
-        <!-- <button class="btn btn-success mb-4" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm">
+        <button class="btn btn-success mb-4" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm">
             <i class="fas fa-plus-circle"></i> Add Network
-        </button> -->
+        </button>
+
+        <!-- Countdown Timer and Config Button -->
+        <div class="d-flex justify-content-center align-items-center mb-4">
+            <div id="countdown-timer" class="me-3">
+                <i class="fas fa-clock"></i> <span id="countdown-value">60</span>s
+            </div>
+            <button class="btn btn-secondary" id="config-button">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+
+        <!-- Interval Input (Hidden by Default) -->
+        <div class="mb-4" id="interval-config" style="display: none;">
+            <label for="interval-input" class="form-label">Ping Interval (ms):</label>
+            <input type="number" class="form-control" id="interval-input" value="60000">
+        </div>
+
+        <!-- Collapsible Form to Add New IP -->
+        <div class="collapse" id="addNetworkForm">
+            <div class="card card-body">
+                <h5 class="mb-3">Add New Network</h5>
+                <form id="add-network-form">
+                    <div class="mb-3">
+                        <label for="network-name" class="form-label">Network Name</label>
+                        <input type="text" class="form-control" id="network-name" placeholder="Enter Network Name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="network-ip" class="form-label">IP Address</label>
+                        <input type="text" class="form-control" id="network-ip" placeholder="Enter IP Address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Network</button>
+                </form>
+            </div>
+        </div>
 
         <!-- Network Status Container -->
-        <div id="network-container" class="row mt-4 grid-view">
+        <div id="network-container" class="row mt-2 grid-view">
             {% for name, data in statuses.items() %}
             {% set sanitized_name = name | replace(' ', '_') %}
             <div id="networkCard{{ sanitized_name }}" class="col-md-4 mb-4 network-card">
                 <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg border rounded-3">
                     <div class="card-body">
-                        <i class="fas fa-network-wired fa-3x mb-3 d-block mx-auto"></i> <!-- Center Icon -->
-                        <h5 class="card-title">{{ name }}</h5>
-
+                        
+                         <!-- Wi-Fi Icon and Name in the Same Row -->
+                         <div class="d-flex align-items-center mb-3 mx-auto">
+                            <i class="fas fa-network-wired fa-3x me-3"></i> <!-- Larger Icon with Margin -->
+                            <h5 class="card-title mb-0">{{ name }}</h5> <!-- Network Name -->
+                        </div>
+                                                
                         <!-- Status Information -->
                         <div class="row">
                             <div class="col-12">
@@ -76,18 +122,21 @@
                             </div>
                             <div class="col-12">
                                 <p>
-                                    <i class="fas fa-circle {{ 'text-success' if data.status == 'Up' else 'text-danger' }}"></i> 
-                                    <strong>Status:</strong> 
-                                    <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }}">{{ data.status }}</span>
+                                    <!-- Larger Status Dot -->
+                                    <i class="fas fa-circle {{ 'text-success' if data.status == 'Up' else 'text-danger' }} me-2 status-dot"></i>
+                                    <strong>Status:</strong>
+                                    <!-- Larger Status Badge -->
+                                    <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>
                                 </p>
                             </div>
                             <div class="col-12">
-                                <p><i class="fas fa-calendar-alt"></i> <strong>Up Since:</strong> {{ data.up_since if data.up_since != 'N/A' else 'N/A' }}</p>
+                                <p class="status-upsince"><i class="fas fa-calendar-alt"></i> <strong>Up Since:</strong> {{ data.up_since if data.up_since != 'N/A' else 'N/A' }}</p>
                             </div>
                             <!-- telnet button -->
                             <!-- <div class="col-12">
                                 <button class="btn btn-info mt-3" onclick="window.location.href='/telnet/{{ name }}'">Telnet to {{ name }}</button>
                             </div> -->
+                            
                         </div>
 
                         <!-- Telnet Commands -->
@@ -102,30 +151,23 @@
 
                         <!-- Ping Logs Section (Collapsible) -->
                         <div class="ping-logs mt-4">
-                            
-                            <div class="accordion" id="pingLogsAccordion{{ sanitized_name }}">
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="pingLogsHeading{{ sanitized_name }}">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#pingLogsCollapse{{ sanitized_name }}" aria-expanded="false" aria-controls="pingLogsCollapse{{ sanitized_name }}">
-                                            <i class="fas fa-poll"></i> Ping Logs
-                                        </button>
-                                    </h2>
-                                    <div style="background-color: #3a3a55;" id="pingLogsCollapse{{ sanitized_name }}" class="accordion-collapse collapse" aria-labelledby="pingLogsHeading{{ sanitized_name }}" data-bs-parent="#pingLogsAccordion{{ sanitized_name }}">
-                                        <div class="accordion-body" >
-                                            {% for log in data.ping_logs[-10:] | reverse %}
-                                            <div class="ping-log-item d-flex justify-content-between align-items-center mb-3 p-3 border rounded-3">
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-clock fa-lg me-2"></i>
-                                                    <strong>{{ log.timestamp }}</strong>
-                                                </div>
-                                                <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.status }}</span>
-                                                <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.response_time }}ms</span>
-                                            </div>
-                                            {% endfor %}
-                                        </div>
+
+                        <i class="fas fa-poll"></i> Ping Logs
+                            <div class="accordion-body ping-log-container" >
+                                {% for log in data.ping_logs | reverse %}
+                                <div class="ping-log-item d-flex justify-content-between align-items-center mb-3 p-3 border rounded-3">
+                                    <span>Log Index: {{ loop.index }}</span>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-clock fa-lg me-2"></i>
+                                        <strong>{{ log.timestamp }}</strong>
                                     </div>
+                                    <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.status }}</span>
+                                    <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.response_time }}</span>
                                 </div>
+                                {% endfor %}
                             </div>
+
+                           
                         </div>
 
                     </div>
@@ -139,20 +181,48 @@
         <p>&copy; 2025 freakyit. All rights reserved.</p>
     </footer>
 
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <!-- button events -->
     <script>
+        const socket = io({
+            transports: ['websocket']
+        });
+
+        // Handle scan update event
+        socket.on('scan_update', function(data) {
+            const ip = data.ip;
+            const progress = data.progress;
+            initInfoText.textContent = `Checking IP: ${ip} (${Math.round(progress)}%)`;
+            initProgressBar.style.width = `${progress}%`;
+        });
+
+        // Handle init network response
+        socket.on('init_network_response', function(data) {
+            if (data.error) {
+                initInfoText.textContent = `Initialization failed: ${data.error}`;
+            } else {
+                console.log("Updated Subnets:", data.subnets);
+                initInfoText.textContent = 'Initialization complete!';
+            }
+        });
+
         // Init network button click event
         const initButton = document.getElementById('init-button');
+        const initProgress = document.getElementById('init-progress');
+        const initProgressBar = document.getElementById('init-progress-bar');
+        const initInfo = document.getElementById('init-info');
+        const initInfoText = document.getElementById('init-info-text');
+
         if (initButton) {
             initButton.addEventListener('click', function() {
-                // Update network UI with new subnets (you can add this inside the initButton event handler)
-                fetch('/init_network')
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Updated Subnets:", data.subnets);
-                        // Here you can update your UI with the new subnets if needed
-                    })
-                    .catch(error => console.error('Error fetching network status:', error));
-                            });
+                initProgress.style.display = 'block';
+                initInfo.style.display = 'block';
+                initProgressBar.style.width = '0%';
+                initInfoText.textContent = 'Initializing network...';
+
+                socket.emit('init_network');
+            });
         }
 
         // Theme toggle logic
@@ -164,8 +234,20 @@
                 body.classList.toggle('light-theme');
             });
         }
+
+        // add network toggle logic
+        // const addnetworkBtn = document.getElementById('addnetwork-button');
+        // if (addnetworkBtn) {
+        //     addnetworkBtn.addEventListener('click', function() {
+        //         const body = document.body;
+        //         body.classList.toggle('dark-theme');
+        //         body.classList.toggle('light-theme');
+        //     });
+        // }
+
     </script>
 
+    <!-- Network ping log update -->
     <script>
         // Function to fetch network status
         function fetchNetworkStatus() {
@@ -208,26 +290,56 @@
 
                 if (networkCard) {
                     
-                    console.log('networkCard', networkCard);
                     // Update the network info dynamically
                     const nameElement = networkCard.querySelector('.network-name');
                     const pingLogContainer = networkCard.querySelector('.accordion-body');
-                    
-                    console.log('pingLogContainer', pingLogContainer);
+                    const statusDot = networkCard.querySelector('.status-dot');
+                    const statusBadge = networkCard.querySelector('.status-badge');
+                    const upsince = networkCard.querySelector('.status-upsince');
+
+                    // Update the status dynamically (newest ping status)
+                    if (statusDot && statusBadge) {
+                        const oldestPingLog = data.ping_logs[0];  // Get the oldest ping log
+                        const latestPingLog = data.ping_logs[data.ping_logs.length - 1];  // Get the most recent ping log
+               
+                        if (latestPingLog) {
+                            const status = latestPingLog.status;
+                            const responseTime = latestPingLog.response_time;
+                            const statusClass = status === 'Up' ? 'bg-success' : 'bg-danger';
+                            const dotClass = status === 'Up' ? 'text-success' : 'text-danger';
+                            
+                            // Update the status dot and badge
+                            statusDot.classList.remove('text-success', 'text-danger');
+                            statusDot.classList.add(dotClass);
+                            statusBadge.classList.remove('bg-success', 'bg-danger');
+                            statusBadge.classList.add(statusClass);
+                            statusBadge.textContent = status;
+
+                            upsince.textContent.innerHTML = `<strong>Up Since:</strong>` + latestPingLog.timestamp
+                            
+                            // Optionally display response time or other data
+                            const statusText = networkCard.querySelector('.status-text');
+                            if (statusText) {
+                                statusText.textContent = `${status} | ${responseTime}ms`;
+                            }
+                        }
+                    }
+
                     if (nameElement) nameElement.textContent = name;
 
                     // Render ping logs dynamically
                     // Check if the pingLogContainer exists before attempting to update
                     if (pingLogContainer) {
                         // Clear the existing ping logs and insert new ones
-                        pingLogContainer.innerHTML = data.ping_logs.reverse().slice(0, 10).map(log => `
+                        pingLogContainer.innerHTML = data.ping_logs.reverse().map(log => `
                             <div class="ping-log-item d-flex justify-content-between align-items-center border rounded-3">
+                                
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-clock fa-lg me-2"></i>
                                     <strong>${log.timestamp}</strong>
                                 </div>
                                 <span class="badge ${log.status === 'Up' ? 'bg-success' : 'bg-danger'}">${log.status}</span>
-                                <span class="badge ${log.status === 'Up' ? 'bg-success' : 'bg-danger'}"> ${log.response_time}ms</span>
+                                <span class="badge ${log.status === 'Up' ? 'bg-success' : 'bg-danger'}"> ${log.response_time}</span>
                             </div>
                         `).join('');
                     } else {
@@ -242,10 +354,93 @@
         fetchNetworkStatus();
 
         // Fetch network status every 10 seconds
-        setInterval(fetchNetworkStatus, 10000);
+        let pingInterval = 60000; // Default interval
+        let countdownValue = pingInterval / 1000; // Countdown in seconds
+
+        // Update interval when input changes
+        const intervalInput = document.getElementById('interval-input');
+        if (intervalInput) {
+            intervalInput.addEventListener('change', function() {
+                pingInterval = parseInt(intervalInput.value, 10);
+                countdownValue = pingInterval / 1000;
+                clearInterval(pingIntervalId);
+                pingIntervalId = setInterval(fetchNetworkStatus, pingInterval);
+            });
+        }
+
+        // Config button toggle logic
+        const configButton = document.getElementById('config-button');
+        const intervalConfig = document.getElementById('interval-config');
+        if (configButton && intervalConfig) {
+            configButton.addEventListener('click', function() {
+                intervalConfig.style.display = intervalConfig.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        // Countdown timer logic
+        const countdownTimer = document.getElementById('countdown-value');
+        function updateCountdown() {
+            if (countdownValue > 0) {
+                countdownValue--;
+                countdownTimer.textContent = countdownValue;
+            } else {
+                countdownValue = pingInterval / 1000;
+            }
+        }
+        setInterval(updateCountdown, 1000);
+
+        // Fetch network status initially
+        fetchNetworkStatus();
+
+        // Fetch network status at the specified interval
+        let pingIntervalId = setInterval(fetchNetworkStatus, pingInterval);
 
     </script>
 
+    <!-- Add Network to backend from frontend -->
+    <script>
+        // Handle form submission
+        document.getElementById('add-network-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get the form data
+            const networkName = document.getElementById('network-name').value;
+            const networkIP = document.getElementById('network-ip').value;
+
+            // Prepare the data to send to the backend
+            const data = {
+                name: networkName,
+                ip: networkIP
+            };
+
+            // Send the data to the backend using fetch
+            fetch('/add_network', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Network added successfully!');
+                    // Optionally, reset the form fields after successful submission
+                    document.getElementById('add-network-form').reset();
+                    // Close the form after adding the network
+                    $('#addNetworkForm').collapse('hide');
+                } else {
+                    alert('Error adding network');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error adding network');
+            });
+        });
+    </script>
+
+    <!-- telnet -->
     <script>
         // Function to connect to the correct WebSocket server based on the router
         async function startTelnet(routerName) {

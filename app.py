@@ -1,3 +1,6 @@
+from gevent import monkey
+monkey.patch_all()
+
 import threading
 import subprocess
 import telnetlib
@@ -6,8 +9,8 @@ import platform
 import os
 import time
 import ping3
-from flask import Flask, render_template, jsonify
-from flask_socketio import SocketIO, emit
+from flask import Flask, request, render_template, jsonify
+from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -26,6 +29,14 @@ default_subnets = {
 # Path to the network.conf file
 network_conf_path = 'network.conf'
 
+# Save updated subnets to network.conf
+def save_subnets(subnets):
+    try:
+        with open(network_conf_path, 'w') as conf_file:
+            json.dump({"subnets": subnets}, conf_file, indent=4)
+    except Exception as e:
+        print(f"Error saving to network.conf: {e}")
+        
 # Load subnets from network.conf if it exists
 def load_subnets():
     if os.path.exists(network_conf_path):
@@ -49,22 +60,58 @@ statuses = {}
 # Function to ping an IP and return the response time
 def ping_ip(ip):
     try:
-        response_time = ping3.ping(ip)
-        if response_time is not None:
+        response_time = ping3.ping(ip, 1)
+        if response_time is not False:
             return response_time * 1000  # Convert to milliseconds
         else:
             return None
     except Exception as e:
         return None
 
+# Function to scan a subnet for active clients
+def scan_subnet(subnet, session_id, scanned_subnets):
+    if subnet in scanned_subnets:
+        print(f"Subnet {subnet} already scanned. Skipping...")
+        return []
+
+    active_clients = []
+    base_ip = ".".join(subnet.split(".")[:3]) + "."
+    total_ips = 254
+    for i in range(1, 255):
+        ip = base_ip + str(i)
+        # Send the current IP being checked and progress to the frontend
+        progress = (i / total_ips) * 100
+        socketio.emit('scan_update', {'ip': ip, 'progress': progress}, room=session_id)
+        response_time = ping_ip(ip)
+        if response_time is not None:
+            active_clients.append(ip)
+            print(f"Found active IP: {ip} with response time: {response_time}ms")
+    scanned_subnets.add(subnet)
+    return active_clients
+
 # Function to generate and update the network status
 def get_network_status():
+    subnets = load_subnets()
     for name, ip in subnets.items():
         response_time = ping_ip(ip)
         status = "Up" if response_time is not None else "Down"
         
         # Define the 'up_since' time: if the status is "Up", set the current time as 'up_since'
-        up_since_time = time.strftime("%Y-%m-%d %H:%M:%S") if status == "Up" else "N/A"
+        if name in statuses:
+            up_since_time = statuses[name]['up_since']
+        else:
+            up_since_time = "N/A"
+
+        if status == "Up":
+            if name in statuses:
+                if up_since_time == "N/A":
+                    up_since_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms' if status == "Up" else "N/A"
+                else:
+                    up_since_time = "N/A"
+            else:
+                up_since_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms'
+        else:
+            up_since_time = "N/A"
 
         # If the device is already in the statuses dictionary, update its existing data
         if name in statuses:
@@ -92,6 +139,31 @@ def get_network_status():
                 "status": "Down",
                 "response_time": "N/A"
             })
+
+@app.route('/add_network', methods=['POST'])
+def add_network():
+    try:
+        data = request.get_json()
+        network_name = data.get('name')
+        network_ip = data.get('ip')
+
+        # Load the current subnets from the file
+        subnets = load_subnets()
+
+        # Check if the network name already exists
+        if network_name in subnets:
+            return jsonify({"success": False, "message": "Network already exists."})
+
+        # Add the new network to the subnets dictionary
+        subnets[network_name] = network_ip
+
+        # Save the updated subnets back to the network.conf
+        save_subnets(subnets)
+
+        return jsonify({"success": True})
+
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
 
 # Endpoint to return the network status as JSON
 @app.route("/get_status")
@@ -159,7 +231,13 @@ def init_network():
 
             subnets = load_subnets()
 
-            return json.dumps({"subnets": network_config["subnets"], "missing": missing_subnets})
+            # Scan each subnet for active clients
+            active_clients = {}
+            session_id = request.args.get('session_id')  # Get the session ID from the request
+            for name, subnet in subnets.items():
+                active_clients[name] = scan_subnet(subnet, session_id)
+
+            return json.dumps({"subnets": network_config["subnets"], "missing": missing_subnets, "active_clients": active_clients})
 
         except FileNotFoundError:
             return json.dumps({"error": "network.conf file not found"})
@@ -236,5 +314,83 @@ def index():
     get_network_status()
     return render_template("index.html", statuses=statuses, subnets=subnets)
 
+@socketio.on('init_network')
+def handle_init_network(data):
+    try:
+        session_id = request.sid  # Get the session ID for the current client
+        scanned_subnets = set()  # Keep track of scanned subnets
+        # Check OS type
+        system = platform.system().lower()
+
+        # Run different commands based on the OS
+        if system == 'linux' or system == 'darwin':  # For Unix-like systems (Linux, macOS)
+            route_output = subprocess.check_output(['route', '-n'], text=True)
+        elif system == 'windows':  # For Windows
+            route_output = subprocess.check_output(['route', 'print'], text=True)
+        else:
+            emit('init_network_response', {'error': 'Unsupported Operating System'}, room=session_id)
+            return
+
+        # Extract subnets from the route command output
+        new_subnets = []
+        if system == 'linux' or system == 'darwin':
+            # Parse the Unix-based route output (e.g., "0.0.0.0" for default route)
+            for line in route_output.splitlines():
+                columns = line.split()
+                if len(columns) > 1 and columns[0] == "0.0.0.0":  # Look for the default route (gateway)
+                    gateway = columns[1]  # Typically, the 3rd column is the gateway/subnet
+        
+                    # Check if the gateway/subnet is already in the new_subnets list
+                    if gateway not in new_subnets:
+                        new_subnets.append(gateway)  # Add the subnet if not already present
+
+        elif system == 'windows':
+            # Parse the Windows route output (look for the network destination and subnet mask columns)
+            for line in route_output.splitlines():
+                columns = line.split()
+                if len(columns) >= 4 and columns[0] == "0.0.0.0":  # Look for default route (0.0.0.0)
+                    gateway = columns[2]  # Typically, the 3rd column is the gateway/subnet
+        
+                    # Check if the gateway/subnet is already in the new_subnets list
+                    if gateway not in new_subnets:
+                        new_subnets.append(gateway)  # Add the subnet if not already present
+
+        # Load existing subnets from network.conf
+        try:
+            with open('network.conf', 'r') as conf_file:
+                network_config = json.load(conf_file)
+                existing_subnets = network_config.get("subnets", {})
+
+            # Find missing subnets (those not already in network.conf)
+            missing_subnets = [subnet for subnet in new_subnets if subnet not in existing_subnets.values()]
+
+            # If there are missing subnets, update network.conf
+            if missing_subnets:
+                for subnet in missing_subnets:
+                    new_name = f"Wi-Fi Router {len(network_config['subnets']) + 1}"  # Simple name generator (could be more sophisticated)
+        
+                    network_config["subnets"][new_name] = subnet  # Add the new subnet to the subnets dictionary
+                
+                # Save updated config
+                with open('network.conf', 'w') as conf_file:
+                    json.dump(network_config, conf_file, indent=4)
+
+            subnets = load_subnets()
+
+            # Scan each subnet for active clients
+            active_clients = {}
+            for name, subnet in subnets.items():
+                active_clients[name] = scan_subnet(subnet, session_id, scanned_subnets)
+
+            emit('init_network_response', {"subnets": network_config["subnets"], "missing": missing_subnets, "active_clients": active_clients}, room=session_id)
+
+        except FileNotFoundError:
+            emit('init_network_response', {"error": "network.conf file not found"}, room=session_id)
+
+    except subprocess.CalledProcessError as e:
+        emit('init_network_response', {'error': str(e)}, room=session_id)
+    except Exception as e:
+        emit('init_network_response', {'error': str(e)}, room=session_id)
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)

@@ -26,6 +26,11 @@ body.dark-theme .status-down {
     color: white;
 }
 
+.ping-log-container {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
 body.dark-theme .ping-log-item {
     background-color: #3a3a55;
     color: #f0f4f8;
@@ -127,10 +132,10 @@ body:not(.dark-theme) footer {
 }
 
 
-/* View modes */
+/* View modes
 body.grid-view .network-card {
     display: inline-block;
-    width: 20%;
+    width: 10%;
     margin: 1%;
 }
 
@@ -138,7 +143,7 @@ body.list-view .network-card {
     display: block;
     width: 100%;
     margin-bottom: 20px;
-}
+} */
 
 .network-card .card {
     border-radius: 8px;
@@ -154,7 +159,7 @@ body.list-view .network-card {
 /* Ping log styling */
 .ping-log-item {
     border-radius: 5px;
-    margin-bottom: 0px;
+    margin-bottom: 3px;
     padding: 5px;
     display: flex;
     justify-content: space-between;
@@ -199,11 +204,11 @@ button:hover {
 }
 
 /* Theme toggle button style */
-#theme-toggle-btn {
+/* #theme-toggle-btn {
     border: none;
     cursor: pointer;
     background-color: transparent;
-}
+} */
 
 #theme-toggle-btn i {
     font-size: 18px;
@@ -220,6 +225,17 @@ button:hover {
     border-radius: 8px;
 }
 
+/* Style the 'Up' or 'Down' status dot */
+.status-dot {
+    font-size: 1.5rem;  /* Larger dot size */
+}
+
+/* Style the status badge to be larger */
+.status-badge {
+    font-size: 1.2rem;  /* Increase badge size */
+    padding: 0.4em 1em;
+}
+
 
 /* Ensure that the grid stays at the top */
 #network-container {
@@ -230,10 +246,11 @@ button:hover {
 
 /* Network Card Layout Changes */
 .network-card {
+    flex: 1 1 20%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
+    padding: 5px;
     border-radius: 8px;
     /* background-color: #0056b3; */
     
@@ -315,4 +332,48 @@ button:hover {
 
 .fas {
     color: #4567b7;
+}
+
+#interval-input {
+    width: 200px;
+    margin: 0 auto;
+}
+
+#countdown-timer {
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+#config-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+#config-button i {
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+#interval-config {
+    width: 200px;
+    margin: 0 auto;
+}
+
+#init-progress {
+    width: 100%;
+    height: 20px;
+}
+
+#init-progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #007bff;
+    transition: width 0.5s;
+}
+
+#init-info {
+    text-align: center;
+    font-size: 1rem;
+    color: #007bff;
 }

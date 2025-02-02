@@ -10,8 +10,12 @@ This project allows you to monitor the status of various network routers, track 
 
 - **Network Status Monitoring**: View the status of multiple Wi-Fi routers, including whether they're up or down.
 - **Real-Time Ping Logs**: Track the ping logs for each router, with timestamps and response times.
-- **Dynamic Network Updates**: The app checks and updates network status every 10 seconds, displaying the current status for each router.
+- **Dynamic Network Updates**: The app checks and updates network status at a configurable interval, displaying the current status for each router.
+- **Configurable Ping Interval**: Set the ping interval dynamically through the web UI (default is 60 seconds).
+- **Countdown Timer**: View the remaining time until the next ping update.
 - **Subnets Management**: Automatically adds missing subnets to the `network.conf` file using the `route -n` (Linux/macOS) or `route print` (Windows) command to detect network configurations.
+- **Scanning Subnets for Devices**: Scans each subnet for active devices and logs the active IPs found during the scan.
+- **Logging**: Logs active IPs found during the subnet scan.
 
 ## Missing Features (TBD)
 - **Telnet Interface**: Connect to a router's Telnet interface and interact with it in real-time through the web UI.
@@ -39,7 +43,7 @@ This project allows you to monitor the status of various network routers, track 
     pip install -r requirements.txt
 
 4. **Create a network.conf file in the project root if it doesn't already exist. This file should contain subnets in the following format**:
-    ```bash
+    ```json
     {
         "subnets": {
             "Wi-Fi Router 1": "192.168.10.1",
@@ -59,10 +63,20 @@ This project allows you to monitor the status of various network routers, track 
 
 3. **Network Status Dashboard**:
     View the status of all connected routers.
-    Ping logs are updated every 10 seconds with the latest ping results.
+    Ping logs are updated at a configurable interval with the latest ping results.
     You can interact with each router by clicking on the Telnet button. This will open a small shell window where you can send commands to the router and receive real-time feedback.
 
-4. **(TBD)Telnet Interface**:
+4. **Configurable Ping Interval**:
+    Click the config button (gear icon) to reveal the ping interval input.
+    Set the desired ping interval in milliseconds (default is 60 seconds) and the app will update the interval dynamically.
+
+5. **Countdown Timer**:
+    View the remaining time until the next ping update in the countdown timer next to the config button.
+
+6. **Scanning Subnets for Devices**:
+    The app scans each subnet for active devices during the initialization process. Active IPs found during the scan are logged and displayed in the network status dashboard.
+
+7. **(TBD)Telnet Interface**:
     Click Telnet to [Router Name] to open a Telnet session.
     You can type commands in the text box, and the results will be shown in real-time.
     To disconnect, simply click the Disconnect button.
@@ -71,9 +85,10 @@ This project allows you to monitor the status of various network routers, track 
 ### Backend (Python Flask)
 
 - **app.py**: The backend is built with Flask, which serves the front-end pages and provides the API routes for updating network statuses and Telnet functionality.
-    Network Status: The system checks for the current status of routers every 10 seconds using the ping command, and updates the status dynamically in the front-end.
+    Network Status: The system checks for the current status of routers at a configurable interval using the ping command, and updates the status dynamically in the front-end.
     Telnet Communication: Using WebSockets, the backend communicates with the front-end, allowing real-time Telnet connections to routers.
     Dynamic Subnet Management: The app uses the route -n command (Linux/macOS) or route print (Windows) to detect current network configurations and update the network.conf file as needed.
+    Scanning Subnets: The app scans each subnet for active devices during the initialization process and logs the active IPs found.
 
 ### Frontend (HTML, CSS, JavaScript)
 
