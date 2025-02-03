@@ -30,7 +30,7 @@ function updateNetworkUI(statuses) {
 
         if (networkCard) {
             const nameElement = networkCard.querySelector('.network-name');
-            const pingLogContainer = networkCard.querySelector('.accordion-body');
+            const pingLogContainer = networkCard.querySelector('.ping-log-container');
             const statusDot = networkCard.querySelector('.status-dot');
             const statusBadge = networkCard.querySelector('.status-badge');
             const upsince = networkCard.querySelector('.status-upsince');
@@ -49,7 +49,7 @@ function updateNetworkUI(statuses) {
                     statusBadge.classList.add(statusClass);
                     statusBadge.textContent = status;
 
-                    upsince.textContent.innerHTML = `<strong>Up Since:</strong>` + latestPingLog.timestamp;
+                    upsince.innerHTML = `<strong>Up Since:</strong> ${latestPingLog.timestamp}`;
 
                     const statusText = networkCard.querySelector('.status-text');
                     if (statusText) {
@@ -61,16 +61,30 @@ function updateNetworkUI(statuses) {
             if (nameElement) nameElement.textContent = name;
 
             if (pingLogContainer) {
-                pingLogContainer.innerHTML = data.ping_logs.reverse().map(log => `
-                    <div class="ping-log-item d-flex justify-content-between align-items-center border rounded-3">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-clock fa-lg me-2"></i>
-                            <strong>${log.timestamp}</strong>
+                pingLogContainer.innerHTML = data.ping_logs.map(log => `
+                    <div class="ping-log-bar ${log.status === 'Up' ? 'success' : 'danger'}">
+                        <div class="tooltip">
+                            <strong>Timestamp:</strong> ${log.timestamp}<br>
+                            <strong>Status:</strong> ${log.status}<br>
+                            <strong>Response Time:</strong> ${log.response_time} ms
                         </div>
-                        <span class="badge ${log.status === 'Up' ? 'bg-success' : 'bg-danger'}">${log.status}</span>
-                        <span class="badge ${log.status === 'Up' ? 'bg-success' : 'bg-danger'}"> ${log.response_time}</span>
                     </div>
                 `).join('');
+
+                // Add click event to the new ping-log-bar entries
+                pingLogContainer.querySelectorAll('.ping-log-bar').forEach(bar => {
+                    bar.addEventListener('click', function() {
+                        const tooltipContent = this.querySelector('.tooltip').innerHTML;
+                        const infoWindow = document.getElementById('info-window');
+                        const infoWindowContent = document.getElementById('info-window-content');
+                        if (infoWindow && infoWindowContent) {
+                            infoWindowContent.innerHTML = tooltipContent;
+                            infoWindow.style.display = 'block';
+                        } else {
+                            console.error('Info window elements not found');
+                        }
+                    });
+                });
             } else {
                 console.error(`ping-log-container not found for ${name}`);
             }

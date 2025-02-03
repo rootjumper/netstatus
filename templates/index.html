@@ -38,6 +38,63 @@
         .ping-logs {
             margin-top: 10px;
         }
+
+        .ping-log-bar {
+            width: 5px;
+            height: 100%;
+            display: inline-block;
+            margin-right: 2px;
+            position: relative;
+            cursor: pointer; /* Change cursor to pointer to indicate clickability */
+        }
+        .ping-log-bar.success {
+            background-color: #28a745; /* Green for 'Up' status */
+        }
+        .ping-log-bar.danger {
+            background-color: #dc3545; /* Red for 'Down' status */
+        }
+        .ping-log-container {
+            display: flex;
+            align-items: flex-end;
+            height: 1.5rem; /* Adjust height as needed */
+            overflow-x: auto;
+            overflow-y: visible; /* Ensure tooltips are visible */
+        }
+        .ping-log-bar:hover .tooltip {
+            display: block;
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            white-space: nowrap;
+            z-index: 1000; /* Ensure tooltip is above other elements */
+        }
+        .info-window {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 2000; /* Ensure info window is above other elements */
+        }
+        .info-window .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="dark-theme">
@@ -158,23 +215,18 @@
 
                         <!-- Ping Logs Section (Collapsible) -->
                         <div class="ping-logs mt-4">
-
-                        <i class="fas fa-poll"></i> Ping Logs
-                            <div class="accordion-body ping-log-container" >
+                            <i class="fas fa-poll"></i> Ping Logs
+                            <div class="ping-log-container">
                                 {% for log in data.ping_logs | reverse %}
-                                <div class="ping-log-item d-flex justify-content-between align-items-center mb-3 p-3 border rounded-3">
-                                    <span>Log Index: {{ loop.index }}</span>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-clock fa-lg me-2"></i>
-                                        <strong>{{ log.timestamp }}</strong>
+                                <div class="ping-log-bar {{ 'success' if log.status == 'Up' else 'danger' }}">
+                                    <div class="tooltip">
+                                        <strong>Timestamp:</strong> {{ log.timestamp }}<br>
+                                        <strong>Status:</strong> {{ log.status }}<br>
+                                        <strong>Response Time:</strong> {{ log.response_time }} ms
                                     </div>
-                                    <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.status }}</span>
-                                    <span class="badge {{ 'bg-success' if log.status == 'Up' else 'bg-danger' }}">{{ log.response_time }}</span>
                                 </div>
                                 {% endfor %}
                             </div>
-
-                           
                         </div>
 
                     </div>
@@ -182,6 +234,11 @@
             </div>
             {% endfor %}
         </div>
+    </div>
+
+    <div class="info-window" id="info-window">
+        <span class="close-btn" id="close-info-window">&times;</span>
+        <div id="info-window-content"></div>
     </div>
 
     <footer>
@@ -202,5 +259,24 @@
     <!-- Bootstrap and FontAwesome JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const infoWindow = document.getElementById('info-window');
+            const infoWindowContent = document.getElementById('info-window-content');
+            const closeInfoWindow = document.getElementById('close-info-window');
+
+            document.querySelectorAll('.ping-log-bar').forEach(bar => {
+                bar.addEventListener('click', function() {
+                    const tooltipContent = this.querySelector('.tooltip').innerHTML;
+                    infoWindowContent.innerHTML = tooltipContent;
+                    infoWindow.style.display = 'block';
+                });
+            });
+
+            closeInfoWindow.addEventListener('click', function() {
+                infoWindow.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
