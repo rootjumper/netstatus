@@ -77,6 +77,26 @@ This project provides a web-based interface to monitor the status of various net
 
 The network devices are configured in the `network.conf` file. This file contains a JSON object with the subnets to be monitored. The application will automatically update this file when new devices are added.
 
+### Changing the Port
+
+#### Manual Installation
+
+To change the port on which the application runs, you can modify the `app.py` file. Locate the following line and change the port number as needed:
+```python
+if __name__ == "__main__":
+    socketio.run(app, host="0.0.0.0", port=5000)
+```
+Replace `5000` with your desired port number.
+
+#### Docker
+
+To change the port when using Docker, modify the `docker-compose.yml` file. Locate the following line and change the port number as needed:
+```yaml
+ports:
+  - "5000:5000"
+```
+The format is `host_port:container_port`. Replace the first `5000` with your desired host port number, and the second `5000` with the container port number if needed. Ensure that the `container_port` matches the port specified in `app.py`.
+
 ### Themes
 
 The application supports multiple themes:
