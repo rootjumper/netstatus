@@ -99,21 +99,42 @@
 </head>
 <body class="dark-theme">
     <div class="container text-center">
-        <h1 class="mt-5 mb-4">Network Status - freakyit</h1>
+        <!-- Title Bar -->
+        <div class="title-bar mt-5 mb-4">
+            <div class="title">Network Status - freakyit</div>
+            <div class="buttons">
+                <!-- Theme Toggle Button -->
+                <button class="btn btn-warning" id="theme-toggle-btn">
+                    <i class="fas fa-sun"></i> Toggle Theme
+                </button>
+                <!-- Init and Stop Buttons -->
+                <button class="btn btn-primary me-2" id="init-button" onclick="toggleScan()">
+                    <i class="fas fa-sync-alt"></i> Init Network
+                </button>
+                <button class="btn btn-danger" id="stop-button" onclick="stopScan()" style="display:none;">
+                    <i class="fas fa-stop"></i> Stop Scan
+                </button>
+                <!-- Collapsible Form to Add New IP -->
+                <button class="btn btn-success" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm">
+                    <i class="fas fa-plus-circle"></i> Add Network
+                </button>
 
-        <!-- Theme Toggle Button -->
-        <button class="btn btn-warning mb-4" id="theme-toggle-btn">
-            <i class="fas fa-sun"></i> Toggle Theme
-        </button>
+                <!-- Countdown Timer and Config Button -->
+                <div class="d-flex align-items-center">
+                    <div id="countdown-timer" class="me-3">
+                        <i class="fas fa-clock"></i> <span id="countdown-value">60</span>s
+                    </div>
+                    <button class="btn btn-secondary" id="config-button">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
 
-        <!-- Init and Stop Buttons in the Same Row -->
-        <div class="d-flex justify-content-center mb-4">
-            <button class="btn btn-primary me-2" id="init-button" onclick="toggleScan()">
-                <i class="fas fa-sync-alt"></i> Init Network
-            </button>
-            <button class="btn btn-danger" id="stop-button" onclick="stopScan()" style="display:none;">
-                <i class="fas fa-stop"></i> Stop Scan
-            </button>
+        <!-- Interval Input (Hidden by Default) -->
+        <div class="mb-4" id="interval-config" style="display: none;">
+            <label for="interval-input" class="form-label">Ping Interval (ms):</label>
+            <input type="number" class="form-control" id="interval-input" value="60000">
         </div>
 
         <!-- Progress Bar for Init Stage -->
@@ -122,27 +143,6 @@
         </div>
         <div id="init-info" style="display: none;">
             <p id="init-info-text"></p>
-        </div>
-
-        <!-- Collapsible Form to Add New IP -->
-        <button class="btn btn-success mb-4" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm">
-            <i class="fas fa-plus-circle"></i> Add Network
-        </button>
-
-        <!-- Countdown Timer and Config Button -->
-        <div class="d-flex justify-content-center align-items-center mb-4">
-            <div id="countdown-timer" class="me-3">
-                <i class="fas fa-clock"></i> <span id="countdown-value">60</span>s
-            </div>
-            <button class="btn btn-secondary" id="config-button">
-                <i class="fas fa-cog"></i>
-            </button>
-        </div>
-
-        <!-- Interval Input (Hidden by Default) -->
-        <div class="mb-4" id="interval-config" style="display: none;">
-            <label for="interval-input" class="form-label">Ping Interval (ms):</label>
-            <input type="number" class="form-control" id="interval-input" value="60000">
         </div>
 
         <!-- Collapsible Form to Add New IP -->
@@ -217,7 +217,7 @@
                         <div class="ping-logs mt-4">
                             <i class="fas fa-poll"></i> Ping Logs
                             <div class="ping-log-container">
-                                {% for log in data.ping_logs | reverse %}
+                                {% for log in data.ping_logs %}
                                 <div class="ping-log-bar {{ 'success' if log.status == 'Up' else 'danger' }}">
                                     <div class="tooltip">
                                         <strong>Timestamp:</strong> {{ log.timestamp }}<br>

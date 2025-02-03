@@ -370,13 +370,35 @@ button:hover {
 
 /* Title Bar */
 .title-bar {
-    background-color: #6c757d;
+    background-color: #343a40; /* Darker background color */
     color: white;
     padding: 10px;
     font-size: 1.5rem;
     font-weight: bold;
     text-align: center;
     border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title-bar .title {
+    flex-grow: 1;
+}
+
+.title-bar .buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.title-bar .buttons .btn {
+    background-color: #495057; /* Darker button background color */
+    color: white;
+    border: none;
+}
+
+.title-bar .buttons .btn:hover {
+    background-color: #343a40; /* Darker hover background color */
 }
 
 /* Style the 'Up' or 'Down' status dot */
