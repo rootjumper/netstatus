@@ -30,6 +30,23 @@ This project provides a web-based interface to monitor the status of various net
 
 ## Installation
 
+### Using Docker
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/yourusername/netstatus.git
+    cd netstatus
+    ```
+
+2. Build and run the Docker container:
+    ```sh
+    docker-compose up --build
+    ```
+
+3. Open your web browser and navigate to `http://localhost:5000`.
+
+### Manual Installation
+
 1. Clone the repository:
     ```sh
     git clone https://github.com/yourusername/netstatus.git

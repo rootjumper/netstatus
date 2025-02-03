@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  netstatus:
+    build: .
+    container_name: netstatus
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0
