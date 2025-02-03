@@ -32,8 +32,9 @@ body.dark-theme .status-down {
     display: flex;
     align-items: flex-end;
     height: 100px; /* Adjust height as needed */
-    overflow-x: auto;
+    overflow-x: hidden; /* Disable horizontal scrollbar */
     overflow-y: visible; /* Ensure tooltips are visible */
+    flex-direction: row-reverse; /* Display ping logs from right to left */
 }
 
 body.dark-theme .ping-log-item {
@@ -281,8 +282,9 @@ body.list-view .network-card {
     display: flex;
     align-items: flex-end;
     height: 250px; /* Adjust height as needed */
-    overflow-x: auto;
+    overflow-x: hidden; /* Disable horizontal scrollbar */
     overflow-y: visible; /* Ensure tooltips are visible */
+    flex-direction: row-reverse; /* Display ping logs from right to left */
 }
 .ping-log-bar:hover .tooltip {
     display: block;
@@ -570,4 +572,14 @@ input.rename-device-input {
 /* Show rename device input fields when they are focused */
 input.rename-device-input:focus {
     display: inline-block;
+}
+
+.tooltip {
+    position: absolute;
+    display: none;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 1000;
 }

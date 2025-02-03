@@ -1,6 +1,6 @@
-# Network Status Monitoring (with (TBD)Telnet and (TBD)WebSocket)
+# Network Status Monitoring
 
-This project allows you to monitor the status of various network routers, track their ping logs, and even access a Telnet interface for remote interactions. The app uses Flask, Socket.IO, and WebSockets for real-time communication, as well as dynamic updates for network status monitoring.
+This project provides a web-based interface to monitor the status of various network devices. It uses Flask for the backend, Socket.IO for real-time updates, and Bootstrap for the frontend styling.
 
 ## Overview
 
@@ -19,7 +19,7 @@ This project allows you to monitor the status of various network routers, track 
 - **Logging**: Logs active IPs found during the subnet scan.
 
 ## Missing Features (TBD)
-- **WebSocket Communication**: WebSocket server provides real-time updates and handles Telnet connections.
+- **Telnet Interface**: Telnet server provides remote command execution capabilities.
 
 ## Technologies Used
 
@@ -30,74 +30,70 @@ This project allows you to monitor the status of various network routers, track 
 
 ## Installation
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/rootjumper/netstatus.git
-
-2. **Navigate to the project folder**:
-    ```bash
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/yourusername/netstatus.git
     cd netstatus
+    ```
 
-3. **Install the required dependencies**:
-    ```bash
+2. Create a virtual environment and activate it:
+    ```sh
+    python3 -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. Install the required packages:
+    ```sh
     pip install -r requirements.txt
+    ```
 
-4. **Create a network.conf file in the project root if it doesn't already exist. This file should contain subnets in the following format**:
-    ```json
-    {
-        "subnets": {
-            "Wi-Fi Router 1": "192.168.10.1",
-            "Wi-Fi Router 2": "192.168.11.1",
-            "Wi-Fi Router 3": "192.168.12.1",
-            "Wi-Fi Router 4": "192.168.0.1"
-        }
-    }
+4. Run the application:
+    ```sh
+    python app.py
+    ```
+
+5. Open your web browser and navigate to `http://localhost:5000`.
+
+## Configuration
+
+### Network Configuration
+
+The network devices are configured in the `network.conf` file. This file contains a JSON object with the subnets to be monitored. The application will automatically update this file when new devices are added.
+
+### Themes
+
+The application supports multiple themes:
+- Light Theme
+- Dark Theme
+- Black-Yellow Theme
+
+You can toggle between themes using the "Toggle Theme" button in the web interface.
 
 ## Usage
 
-1. **Start the Flask App**:
-    ```bash
-    python app.py
+### Adding a New Network Device
 
-2. **The application will be available at http://127.0.0.1:5000/. Visit the URL in your browser to view the network status dashboard**.
+1. Click the "Add Network" button.
+2. Fill in the network name and IP address.
+3. Click "Add Network" to save the new device.
 
-3. **Network Status Dashboard**:
-    View the status of all connected routers.
-    Ping logs are updated at a configurable interval with the latest ping results.
-    You can interact with each router by clicking on the Telnet button. This will open a small shell window where you can send commands to the router and receive real-time feedback.
+### Renaming a Network Device
 
-4. **Configurable Ping Interval**:
-    Click the config button (gear icon) to reveal the ping interval input.
-    Set the desired ping interval in milliseconds (default is 60 seconds) and the app will update the interval dynamically.
+1. Click the edit icon next to the device name.
+2. Enter the new name and press Enter.
 
-5. **Countdown Timer**:
-    View the remaining time until the next ping update in the countdown timer next to the config button.
+### Viewing Ping Logs
 
-6. **Scanning Subnets for Devices**:
-    The app scans each subnet for active devices during the initialization process. Active IPs found during the scan are logged and displayed in the network status dashboard.
+Hover over the ping log bars to view detailed information about each ping, including timestamp, status, response time, and time ago.
 
-7. **(TBD)Telnet Interface**:
-    Click Telnet to [Router Name] to open a Telnet session.
-    You can type commands in the text box, and the results will be shown in real-time.
-    To disconnect, simply click the Disconnect button.
+### Telnet Support (TBD)
 
-## How It Works
-### Backend (Python Flask)
+The application will support Telnet for remote device management. This feature is currently under development.
 
-- **app.py**: The backend is built with Flask, which serves the front-end pages and provides the API routes for updating network statuses and Telnet functionality.
-    Network Status: The system checks for the current status of routers at a configurable interval using the ping command, and updates the status dynamically in the front-end.
-    Telnet Communication: Using WebSockets, the backend communicates with the front-end, allowing real-time Telnet connections to routers.
-    Dynamic Subnet Management: The app uses the route -n command (Linux/macOS) or route print (Windows) to detect current network configurations and update the network.conf file as needed.
-    Scanning Subnets: The app scans each subnet for active devices during the initialization process and logs the active IPs found.
+## Contributing
 
-### Frontend (HTML, CSS, JavaScript)
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
-- **Network Status Page**: Displays the router status in a grid view, along with recent ping logs (up to the last 10 pings).
-    Ping Logs: Each router has a collapsible section that displays the latest ping logs, including timestamps, status, and response times.
-    Telnet Interface: Each router card has a Telnet button that, when clicked, opens a Telnet interface. This allows the user to type and execute commands via a small shell window.
-    WebSockets: The front-end uses JavaScript to open WebSocket connections to the backend, sending and receiving real-time updates for both network status and Telnet commands.
+## License
 
-## Troubleshooting
-
-- Ensure your network.conf file is correctly formatted. It should contain an object with a subnets key pointing to a dictionary of router names and their respective IP addresses.
-- Make sure the correct dependencies are installed by running pip install -r requirements.txt.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
