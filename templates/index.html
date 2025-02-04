@@ -10,90 +10,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- External CSS File -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    
-    <style>
-        /* Ensure that the grid stays at the top */
-        #network-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: flex-start; /* Aligns items to the top */
-        }
-
-        .network-card {
-            flex: 1 1 30%; /* Makes sure cards take up 30% of the width (adjust as necessary) */
-            margin-bottom: 20px;
-        }
-
-        .network-card .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start; /* Ensure the content starts at the top */
-        }
-
-        .ping-logs .accordion-button {
-            text-align: left; /* Align ping log toggle button left */
-        }
-
-        /* Optional: Add margin-top to ping logs if needed */
-        .ping-logs {
-            margin-top: 10px;
-        }
-
-        .ping-log-bar {
-            width: 5px;
-            height: 100%;
-            display: inline-block;
-            margin-right: 2px;
-            position: relative;
-            cursor: pointer; /* Change cursor to pointer to indicate clickability */
-        }
-        .ping-log-bar.success {
-            background-color: #28a745; /* Green for 'Up' status */
-        }
-        .ping-log-bar.danger {
-            background-color: #dc3545; /* Red for 'Down' status */
-        }
-        .ping-log-container {
-            display: flex;
-            align-items: flex-end;
-            height: 1.5rem; /* Adjust height as needed */
-            overflow-x: hidden; /* Disable horizontal scrollbar */
-            overflow-y: visible; /* Ensure tooltips are visible */
-        }
-        .info-window {
-            display: none;
-            position: absolute; /* Change to absolute for repositioning */
-            background-color: #fff;
-            color: #000;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 2000; /* Ensure info window is above other elements */
-        }
-        .info-window .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
-
-        /* Ensure all buttons in the title menu have the same size */
-        .title-bar .buttons .btn,
-        .title-bar .buttons a.btn {
-            padding: 10px 15px;
-            font-size: 1rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Remove margin and padding from form element */
-        .title-bar .buttons form {
-            margin: 0;
-            padding: 0;
-            display: inline;
-        }
-    </style>
 </head>
 <body class="dark-theme">
     <div class="container text-center">
@@ -290,39 +206,6 @@
         </p>
     </footer>
     <div id="toast" class="toast">Copied to clipboard</div>
-    <script>
-        function copyToClipboard(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast('Copied to clipboard: ' + text);
-                }).catch(err => {
-                    console.error('Failed to copy: ', err);
-                });
-            } else {
-                const textArea = document.createElement("textarea");
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showToast('Copied to clipboard: ' + text);
-                } catch (err) {
-                    console.error('Failed to copy: ', err);
-                }
-                document.body.removeChild(textArea);
-            }
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 5000); // Increase the duration to 5 seconds
-        }
-    </script>
 
     <!-- Socket.IO -->
     <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
@@ -334,38 +217,12 @@
     <script src="{{ url_for('static', filename='js/telnet.js') }}"></script>
     <script src="{{ url_for('static', filename='js/edit_device.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scan_toggle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/copy_to_clipboard.js') }}"></script>
     <!-- Remove tooltip_handler.js -->
     <!-- <script src="{{ url_for('static', filename='js/tooltip_handler.js') }}"></script> -->
 
     <!-- Bootstrap and FontAwesome JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <script>
-        function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('file', file);
-
-                fetch('{{ url_for("upload_network_conf") }}', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error uploading file:', error);
-                    alert('Error uploading file');
-                });
-            }
-        }
-    </script>
 </body>
 </html>
