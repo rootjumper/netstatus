@@ -9,8 +9,9 @@ import platform
 import os
 import time
 import ping3
-from flask import Flask, request, render_template, jsonify, send_file
+from flask import Flask, request, render_template, jsonify, send_file, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -400,6 +401,25 @@ def rename_device():
 def download_network_conf():
     """Endpoint to download the network.conf file."""
     return send_file(network_conf_path, as_attachment=True)
+
+# Allowed extensions for file upload
+ALLOWED_EXTENSIONS = {'conf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload_network_conf', methods=['POST'])
+def upload_network_conf():
+    if 'file' not in request.files:
+        return jsonify({"success": False, "message": "No file part"})
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"success": False, "message": "No selected file"})
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.root_path, filename))
+        return jsonify({"success": True})
+    return jsonify({"success": False, "message": "File not allowed"})
 
 @app.route("/")
 def index():

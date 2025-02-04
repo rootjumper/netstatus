@@ -94,7 +94,6 @@ function updateNetworkUI(statuses) {
                 // Add mouse events to the new ping-log-bar entries
                 pingLogContainer.querySelectorAll('.ping-log-bar').forEach(bar => {
                     bar.addEventListener('mouseover', function(event) {
-                        console.log('Mouse over ping bar');
                         const tooltipContent = this.querySelector('.tooltip').innerHTML;
                         const infoWindow = document.getElementById('info-window');
                         const infoWindowContent = document.getElementById('info-window-content');
@@ -109,7 +108,6 @@ function updateNetworkUI(statuses) {
                     });
 
                     bar.addEventListener('mouseout', function() {
-                        console.log('Mouse out of ping bar');
                         const infoWindow = document.getElementById('info-window');
                         if (infoWindow) {
                             infoWindow.style.display = 'none';
@@ -117,7 +115,6 @@ function updateNetworkUI(statuses) {
                     });
 
                     bar.addEventListener('mousemove', function(event) {
-                        console.log('Mouse move over ping bar');
                         const infoWindow = document.getElementById('info-window');
                         if (infoWindow) {
                             infoWindow.style.left = event.pageX + 'px';

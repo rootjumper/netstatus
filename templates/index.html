@@ -76,6 +76,23 @@
             right: 10px;
             cursor: pointer;
         }
+
+        /* Ensure all buttons in the title menu have the same size */
+        .title-bar .buttons .btn,
+        .title-bar .buttons a.btn {
+            padding: 10px 15px;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Remove margin and padding from form element */
+        .title-bar .buttons form {
+            margin: 0;
+            padding: 0;
+            display: inline;
+        }
     </style>
 </head>
 <body class="dark-theme">
@@ -100,9 +117,14 @@
                     <i class="fas fa-plus-circle"></i> Add Network
                 </button>
                 <!-- Download network.conf Button -->
-                <a class="btn btn-info" href="{{ url_for('download_network_conf') }}" download>
-                    <i class="fas fa-download"></i> network.conf
+                <a class="btn btn-info" href="{{ url_for('download_network_conf') }}" download title="Download the current network configuration file">
+                    <i class="fas fa-download"></i>
                 </a>
+                <!-- Upload network.conf Button -->
+                <input type="file" id="fileInput" style="display: none;" onchange="uploadFile()">
+                <button type="button" class="btn btn-warning" onclick="document.getElementById('fileInput').click()" title="Upload a new network configuration file">
+                    <i class="fas fa-upload"></i>
+                </button>
                 <!-- Countdown Timer and Config Button -->
                 <div class="d-flex align-items-center">
                     <div id="countdown-timer" class="me-3">
@@ -273,5 +295,32 @@
     <!-- Bootstrap and FontAwesome JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script>
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('{{ url_for("upload_network_conf") }}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                    alert('Error uploading file');
+                });
+            }
+        }
+    </script>
 </body>
 </html>
