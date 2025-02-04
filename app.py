@@ -196,6 +196,8 @@ def add_network():
 # Endpoint to return the network status as JSON
 @app.route("/get_status")
 def get_status():
+    global subnets
+    subnets = load_subnets()  # Reload the subnets from the configuration file
     get_network_status()  # Update the status
     return jsonify(statuses)
 
@@ -376,15 +378,20 @@ def rename_device():
         if new_name in subnets:
             return jsonify({"success": False, "message": "New name already exists."})
 
-        # Rename the device in subnets
-        subnets[new_name] = subnets.pop(old_name)
+        # Rename the device in subnets while keeping the same position
+        new_subnets = {}
+        for key, value in subnets.items():
+            if key == old_name:
+                new_subnets[new_name] = value
+            else:
+                new_subnets[key] = value
 
         # Rename the device in statuses
         if old_name in statuses:
             statuses[new_name] = statuses.pop(old_name)
 
         # Save the updated subnets back to the network.conf
-        save_subnets(subnets)
+        save_subnets(new_subnets)
 
         return jsonify({"success": True})
 
