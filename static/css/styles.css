@@ -146,7 +146,7 @@ body:not(.dark-theme) .accordion-button {
 
 body:not(.dark-theme) .accordion-button:not(.collapsed) {
     background-color: #6c757d;
-    color: white;
+    color: yellow;
 }
 
 body:not(.dark-theme) .accordion-button:focus {
@@ -154,8 +154,52 @@ body:not(.dark-theme) .accordion-button:focus {
 }
 
 body:not(.dark-theme) footer {
-    background-color: #f8f9fa;
+    background-color: #212529;
+    color: yellow;
+}
+
+body:not(.dark-theme) .card-body {
+    color: yellow;
+    background-color: #212529; /* Light background for card body */
+}
+
+body:not(.dark-theme) .form-control {
+    background-color: #ffffff; /* Light background for form control */
+    color: #212529; /* Dark text color for form control */
+    border: 1px solid #ced4da; /* Border color for form control */
+}
+
+body:not(.dark-theme) .form-control::placeholder {
+    color: #6c757d; /* Placeholder text color */
+}
+
+body:not(.dark-theme) .btn-primary {
+    background-color: #007bff; /* Primary button background color */
+    border-color: #007bff; /* Primary button border color */
+}
+
+body:not(.dark-theme) .btn-primary:hover {
+    background-color: #0056b3; /* Primary button hover background color */
+    border-color: #0056b3; /* Primary button hover border color */
+}
+
+body:not(.dark-theme) .card-title {
+    color: yellow;
+}
+
+/* Button customizations for light theme */
+body:not(.dark-theme) button.btn-info, 
+body:not(.dark-theme) button.btn-warning, 
+body:not(.dark-theme) button.btn-success {
+    background-color: #ffffff;
     color: #212529;
+    border: 1px solid #ced4da;
+}
+
+body:not(.dark-theme) button.btn-info:hover, 
+body:not(.dark-theme) button.btn-warning:hover, 
+body:not(.dark-theme) button.btn-success:hover {
+    background-color: #e2e6ea;
 }
 
 /* Light theme */
@@ -373,7 +417,6 @@ button:hover {
 /* Title Bar */
 .title-bar {
     background-color: #343a40; /* Darker background color */
-    color: white;
     padding: 10px;
     font-size: 1.5rem; /* Keep font size */
     font-weight: bold;
@@ -385,6 +428,7 @@ button:hover {
     width: 100%; /* Ensure the title bar spans the full width */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
+
 
 .title-bar .title {
     flex-grow: 1;

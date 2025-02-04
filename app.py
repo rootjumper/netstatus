@@ -9,7 +9,7 @@ import platform
 import os
 import time
 import ping3
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, send_file
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
 app = Flask(__name__)
@@ -38,23 +38,22 @@ def save_subnets(subnets):
         with subnet_lock:
             with open(network_conf_path, 'w') as conf_file:
                 json.dump({"subnets": subnets}, conf_file, indent=4)
+        print(f"Subnets saved to {network_conf_path}: {subnets}")
     except Exception as e:
         print(f"Error saving to network.conf: {e}")
         
 # Load subnets from network.conf if it exists
 def load_subnets():
-    if os.path.exists(network_conf_path):
-        try:
-            with subnet_lock:
-                with open(network_conf_path, 'r') as conf_file:
-                    network_config = json.load(conf_file)
-                    subnets = network_config.get('subnets', {})
-                    return subnets
-        except Exception as e:
-            print(f"Error loading network.conf: {e}")
-            return default_subnets  # Return default if there's an error
-    else:
-        return default_subnets  # Return default if the file doesn't exist
+    try:
+        with subnet_lock:
+            with open(network_conf_path, 'r') as conf_file:
+                network_config = json.load(conf_file)
+                subnets = network_config.get('subnets', {})
+                print(f"Subnets loaded from {network_conf_path}: {subnets}")
+                return subnets
+    except Exception as e:
+        print(f"Error loading network.conf: {e}")
+        return default_subnets  # Return default if there's an error
 
 # Load the subnets at the start
 subnets = load_subnets()
@@ -124,31 +123,29 @@ def get_network_status():
         response_time = ping_ip(ip)
         status = "Up" if response_time is not None else "Down"
         
-        # Define the 'up_since' time: if the status is "Up", set the current time as 'up_since'
+        # Define the 'last_seen' time: if the status is "Up", set the current time as 'last_seen'
         if name in statuses:
-            up_since_time = statuses[name]['up_since']
+            last_seen_time = statuses[name]['last_seen']
         else:
-            up_since_time = "N/A"
+            last_seen_time = "N/A"
 
         if status == "Up":
             if name in statuses:
-                if up_since_time == "N/A":
-                    up_since_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms' if status == "Up" else "N/A"
-                else:
-                    up_since_time = "N/A"
+                last_seen_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms' if status == "Up" else "N/A"
+                
             else:
-                up_since_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms'
+                last_seen_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms'
         else:
-            up_since_time = "N/A"
+            last_seen_time = "N/A"
 
         # If the device is already in the statuses dictionary, update its existing data
         if name in statuses:
             statuses[name]['status'] = status
-            statuses[name]['up_since'] = up_since_time
+            statuses[name]['last_seen'] = last_seen_time
         else:
             statuses[name] = {
                 "status": status,
-                "up_since": up_since_time,
+                "last_seen": last_seen_time,
                 "ping_logs": []
             }
 
@@ -260,6 +257,7 @@ def init_network():
                 # Save updated config
                 with open('network.conf', 'w') as conf_file:
                     json.dump(network_config, conf_file, indent=4)
+                print(f"Updated network.conf with new subnets: {missing_subnets}")
 
             subnets = load_subnets()
 
@@ -398,6 +396,11 @@ def rename_device():
     except Exception as e:
         return jsonify({"success": False, "message": str(e)})
 
+@app.route('/download_network_conf')
+def download_network_conf():
+    """Endpoint to download the network.conf file."""
+    return send_file(network_conf_path, as_attachment=True)
+
 @app.route("/")
 def index():
     get_network_status()
@@ -466,6 +469,7 @@ def handle_init_network():
                 # Save updated config
                 with open('network.conf', 'w') as conf_file:
                     json.dump(network_config, conf_file, indent=4)
+                print(f"Updated network.conf with new subnets: {missing_subnets}")
 
             subnets = load_subnets()
 

@@ -1,0 +1,17 @@
+// filepath: /home/rootjumper/netstatus/.devcontainer/devcontainer.json
+{
+    "name": "Netstatus Dev Container",
+    "context": "..",
+    "dockerFile": "../Dockerfile",
+    "workspaceFolder": "/app",
+    "runArgs": ["--network", "host"],
+    "settings": {
+      "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+      "ms-python.python",
+      "ms-python.vscode-pylance"
+    ],
+    "postCreateCommand": "pip install -r requirements.txt",
+    "remoteUser": "root"
+  }

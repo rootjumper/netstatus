@@ -51,7 +51,7 @@ function updateNetworkUI(statuses) {
                     statusBadge.classList.add(statusClass);
                     statusBadge.textContent = status;
 
-                    upsince.innerHTML = `<strong>Up Since:</strong> ${latestPingLog.timestamp}`;
+                    upsince.innerHTML = `<strong>Last Seen:</strong> ${latestPingLog.timestamp}`;
 
                     const statusText = networkCard.querySelector('.status-text');
                     if (statusText) {

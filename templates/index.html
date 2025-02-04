@@ -99,7 +99,10 @@
                 <button class="btn btn-success" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm">
                     <i class="fas fa-plus-circle"></i> Add Network
                 </button>
-
+                <!-- Download network.conf Button -->
+                <a class="btn btn-info" href="{{ url_for('download_network_conf') }}" download>
+                    <i class="fas fa-download"></i> network.conf
+                </a>
                 <!-- Countdown Timer and Config Button -->
                 <div class="d-flex align-items-center">
                     <div id="countdown-timer" class="me-3">
@@ -175,7 +178,7 @@
                                 </p>
                             </div>
                             <div class="col-12">
-                                <p class="status-upsince"><i class="fas fa-calendar-alt"></i> <strong>Up Since:</strong> {{ data.up_since if data.up_since != 'N/A' else 'N/A' }}</p>
+                                <p class="status-upsince"><i class="fas fa-calendar-alt"></i> <strong>Last Seen:</strong> {{ data.up_since if data.up_since != 'N/A' else 'N/A' }}</p>
                             </div>
                             <!-- telnet button -->
                             <!-- <div class="col-12">
