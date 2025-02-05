@@ -47,7 +47,7 @@ This project provides a web-based interface to monitor the status of various net
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/netstatus.git
+    git clone https://github.com/rootjumper/netstatus.git
     cd netstatus
     ```
 
