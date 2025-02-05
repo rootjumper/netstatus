@@ -133,6 +133,10 @@ Hover over the ping log bars to view detailed information about each ping, inclu
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
+BTC: bc1pragmz2qhtm6qzrljvvlsayfhtwtrc5egk4yfa60wr3ks7xv0musq7l7dn5
+ETH: 0xA23B64E80a13F9ce54055F71b9d501AE92aBe378
+Solana: EHi8PRa4t5Ge3EJ6GJF5omhpktFQdPdSeJKx78BCnJMP
+
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
