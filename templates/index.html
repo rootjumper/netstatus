@@ -91,96 +91,74 @@
             {% set sanitized_name = name | replace(' ', '_') %}
             <div id="networkCard{{ sanitized_name }}" class="col-md-4 network-card">
                 <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg">
-                    <div class="card-body">
-
-                         <!-- Wi-Fi Icon and Name in the Same Row -->
-                         <div class="d-flex align-items-center mb-3 mx-auto">
-                            <i class="fas fa-network-wired fa-3x me-3"></i> <!-- Larger Icon with Margin -->
-                            <input type="text" class="form-control rename-device-input" id="deviceNameInput{{ sanitized_name }}" value="{{ name }}">
-                            <h5 class="card-title mb-0 network-name" id="deviceNameLabel{{ sanitized_name }}">{{ name }}</h5>
-                            <i class="fas fa-edit ms-2 edit-icon" id="editIcon{{ sanitized_name }}" style="cursor: pointer;"></i>
+                    <div class="card-header d-flex justify-content-between align-items-center" data-bs-toggle="collapse" data-bs-target="#collapse{{ sanitized_name }}" aria-expanded="false" aria-controls="collapse{{ sanitized_name }}" style="cursor: pointer;">
+                        <div>
+                            <i class="fas fa-network-wired me-2"></i>
+                            <span class="network-name">{{ name }}</span>
+                            <span class="network-ip">{{ subnets[name] }}</span>
                         </div>
-
-                        <!-- Status Information -->
-                        <div class="row">
-                            <div class="col-12">
-                                <p><i class="fas fa-laptop-house"></i> <strong>IP Address:</strong> {{ subnets[name] }}</p>
-                            </div>
-                            <div class="col-12">
-                                <p>
-                                    <!-- Larger Status Badge -->
-                                    <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>{{ data.up_since if data.up_since != 'N/A' else 'N/A' }}
-                                </p>
-                            </div>
-                            <div class="col-12">
-                                <!-- <p class="status-upsince"><i class="fas fa-calendar-alt"></i> <strong>Last Seen:</strong> </p> -->
-                            </div>
-                            <!-- telnet button -->
-                            <!-- <div class="col-12">
-                                <button class="btn btn-info mt-3" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')">
-                                    <i class="fas fa-terminal"></i>
-                                </button>
-                            </div> -->
-
+                        <div>
+                            <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>
                         </div>
-
-                        <!-- Telnet Commands -->
-                        <div class="terminal" style="display:block;">
-                            <div id="output" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
-                            <div class="input-line d-flex mt-2">
-                                <input id="usernameInput" type="text" class="form-control me-2" placeholder="Username" />
-                                <input id="passwordInput" type="password" class="form-control me-2 passwordInput" placeholder="Password" />
-                                <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
-                                <button id="sendCommandBtn" class="btn btn-primary" style="display:none;">Send</button>
-                                <button class="btn btn-info me-2 telnetBtn" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
-                                    <i class="fas fa-terminal"></i>
-                                </button>
+                    </div>
+                    <div class="ping-log-container">
+                        {% set max_ping_logs = 50 %}
+                        {% for log in data.ping_logs[-max_ping_logs:] %}
+                        <div class="ping-log-bar {{ 'success' if log.status == 'Up' else 'danger' }}" style="order: {{ max_ping_logs - loop.index0 }}">
+                            <div class="tooltip">
+                                <strong>Timestamp:</strong> {{ log.timestamp }}<br>
+                                <strong>Status:</strong> {{ log.status }}<br>
+                                <strong>Response Time:</strong> {{ log.response_time }} ms<br>
+                                <strong>Time Ago:</strong>
                             </div>
                         </div>
-
-                        <!-- Ping Logs Section (Collapsible) -->
-                        <div class="ping-logs mt-4">
-                            <div class="ping-log-container">
-                                {% set max_ping_logs = 50 %}
-                                {% for log in data.ping_logs[-max_ping_logs:] %}
-                                <div class="ping-log-bar {{ 'success' if log.status == 'Up' else 'danger' }}" style="order: {{ max_ping_logs - loop.index0 }}">
-                                    <div class="tooltip">
-                                        <strong>Timestamp:</strong> {{ log.timestamp }}<br>
-                                        <strong>Status:</strong> {{ log.status }}<br>
-                                        <strong>Response Time:</strong> {{ log.response_time }} ms<br>
-                                        <strong>Time Ago:</strong>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <div class="ping-log-info mt-2 d-flex justify-content-between">
-                                <div class="time-ago">
-                                    <!-- <script>
-                                        const firstLogTime = new Date("{{ data.ping_logs[0].timestamp }}");
-                                        const currentTime = new Date();
-                                        const timeDiff = (currentTime - firstLogTime) / 1000;
-                                        let timeAgoText;
-                                        if (timeDiff < 60) {
-                                            timeAgoText = `${Math.round(timeDiff)} seconds ago`;
-                                        } else if (timeDiff < 3600) {
-                                            timeAgoText = `${Math.round(timeDiff / 60)} minutes ago`;
-                                        } else if (timeDiff < 86400) {
-                                            timeAgoText = `${Math.round(timeDiff / 3600)} hours ago`;
-                                        } else {
-                                            timeAgoText = `${Math.round(timeDiff / 86400)} days ago`;
-                                        }
-                                        document.write(timeAgoText);
-                                    </script> -->
-                                </div>
-                                <div class="uptime-percentage">
-                                    <strong>Uptime:</strong> {{ data.uptime_percentage }}%
-                                </div>
-                                <div class="now">
-                                    Now
+                        {% endfor %}
+                    </div>
+                    <div class="ping-log-info mt-2 d-flex justify-content-between">
+                        <div class="time-ago">
+                            <!-- <script>
+                                const firstLogTime = new Date("{{ data.ping_logs[0].timestamp }}");
+                                const currentTime = new Date();
+                                const timeDiff = (currentTime - firstLogTime) / 1000;
+                                let timeAgoText;
+                                if (timeDiff < 60) {
+                                    timeAgoText = `${Math.round(timeDiff)} seconds ago`;
+                                } else if (timeDiff < 3600) {
+                                    timeAgoText = `${Math.round(timeDiff / 60)} minutes ago`;
+                                } else if (timeDiff < 86400) {
+                                    timeAgoText = `${Math.round(timeDiff / 3600)} hours ago`;
+                                } else {
+                                    timeAgoText = `${Math.round(timeDiff / 86400)} days ago`;
+                                }
+                                document.write(timeAgoText);
+                            </script> -->
+                        </div>
+                        <div class="uptime-percentage">
+                            <strong>Uptime:</strong> {{ data.uptime_percentage }}%
+                        </div>
+                        <div class="now">
+                            Now
+                        </div>
+                    </div>
+                    <div id="collapse{{ sanitized_name }}" class="collapse">
+                        <div class="card-body">
+                            <!-- Telnet Commands -->
+                            <div class="terminal" style="display:block;">
+                                <div id="output" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
+                                <div class="input-line d-flex mt-2">
+                                    <input id="usernameInput" type="text" class="form-control me-2" placeholder="Username" />
+                                    <input id="passwordInput" type="password" class="form-control me-2 passwordInput" placeholder="Password" />
+                                    <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
+                                    <button id="sendCommandBtn" class="btn btn-primary" style="display:none;">Send</button>
+                                    <button class="btn btn-info me-2 telnetBtn" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
+                                        <i class="fas fa-terminal"></i>
+                                    </button>
+                                    <button class="btn btn-secondary me-2" id="downloadLogBtn{{ sanitized_name }}" onclick="downloadTelnetLog('{{ sanitized_name }}')" title="Download Log" style="display: none;">
+                                        <i class="fas fa-file-download"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

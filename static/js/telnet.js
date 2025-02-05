@@ -9,6 +9,7 @@ async function toggleTelnet(routerName) {
     const sendCommandBtn = networkCard.querySelector('#sendCommandBtn');
     const usernameInput = networkCard.querySelector('#usernameInput');
     const passwordInput = networkCard.querySelector('#passwordInput');
+    const downloadLogBtn = networkCard.querySelector(`#downloadLogBtn${sanitizedRouterName}`);
 
     const sendCommandHandler = function() {
         const command = commandInput.value.trim();
@@ -49,6 +50,7 @@ async function toggleTelnet(routerName) {
         passwordInput.disabled = false;
         usernameInput.style.display = 'block';
         passwordInput.style.display = 'block';
+        downloadLogBtn.style.display = 'none';
     } else {
         // Connect Telnet
         const socket = io({
@@ -118,6 +120,9 @@ async function toggleTelnet(routerName) {
                 const formattedMessage = data.message.replace(/\n/g, '<br>').replace(/\x1b\[[0-9;]*m/g, '');
                 outputDiv.innerHTML += formattedMessage + '<br>';
                 outputDiv.scrollTop = outputDiv.scrollHeight;
+                if (outputDiv.innerText.trim()) {
+                    downloadLogBtn.style.display = 'block';
+                }
             }
         });
 
@@ -140,4 +145,20 @@ async function toggleTelnet(routerName) {
         outputDiv.innerHTML = 'Connecting...<br>';
         socket.emit('start_telnet', { router_name: routerName, username: username, password: password });
     }
+}
+
+function downloadTelnetLog(routerName) {
+    const sanitizedRouterName = routerName.replace(/\s+/g, '_');
+    const networkCard = document.querySelector(`#networkCard${sanitizedRouterName}`);
+    const outputDiv = networkCard.querySelector('#output');
+    const logContent = outputDiv.innerText;
+    const blob = new Blob([logContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${sanitizedRouterName}_telnet_log.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }

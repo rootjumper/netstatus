@@ -24,7 +24,7 @@ body.dark-theme .status-up {
 }
 
 body.dark-theme .status-down {
-    background-color: #dc3545;
+    /* background-color: #dc3545; */
     color: white;
 }
 
@@ -393,7 +393,7 @@ body.list-view .network-card {
 
 .ping-log-bar {
     width: 5px;
-    height: 100%; /* Ensure the height is 100% of the container */
+    height: 20px; /* Change height to 20px */
     display: inline-block;
     margin-right: 2px;
     position: relative;
@@ -411,7 +411,7 @@ body.list-view .network-card {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px; /* Adjust height as needed */
+    height: 20px; /* Adjust height to match ping bar */
     overflow-x: hidden; /* Disable horizontal scrollbar */
     overflow-y: visible; /* Ensure tooltips are visible */
     flex-direction: row-reverse; /* Display ping logs from right to left */
@@ -840,7 +840,7 @@ input.rename-device-input:focus {
 
 .ping-log-bar {
     width: 5px;
-    height: 100%; /* Ensure the height is 100% of the container */
+    height: 20px; /* Change height to 20px */
     display: inline-block;
     margin-right: 2px;
     position: relative;
@@ -856,10 +856,13 @@ input.rename-device-input:focus {
 }
 .ping-log-container {
     display: flex;
-    align-items: flex-end;
-    height: 1.5rem; /* Adjust height as needed */
+    align-items: center;
+    justify-content: center;
+    height: 20px; /* Adjust height to match ping bar */
     overflow-x: hidden; /* Disable horizontal scrollbar */
     overflow-y: visible; /* Ensure tooltips are visible */
+    flex-direction: row-reverse; /* Display ping logs from right to left */
+    margin-top: 5px; /* Move the ping bar a few pixels lower */
 }
 
 .info-window {
@@ -923,3 +926,51 @@ input.rename-device-input:focus {
 .terminal .input-line button {
     flex-shrink: 0;
 }
+
+/* ...existing code... */
+
+.network-card .card-header {
+    cursor: pointer;
+    background-color: #2d2d44; /* Match the card background color */
+    color: #f0f4f8; /* Light text color for dark theme */
+    border-bottom: 1px solid #444c6a; /* Border color for header */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+}
+
+.network-card .card-header .network-name {
+    font-weight: bold;
+}
+
+.network-card .card-header .network-ip {
+    margin-left: 10px;
+    font-size: 0.9rem;
+    color: #b0b3c5; /* Lighter text color for IP */
+}
+
+.network-card .card-header .status-badge {
+    margin-left: 10px;
+}
+
+.network-card .ping-log-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px; /* Adjust height to match ping bar */
+    overflow-x: hidden; /* Disable horizontal scrollbar */
+    overflow-y: visible; /* Ensure tooltips are visible */
+    flex-direction: row-reverse; /* Display ping logs from right to left */
+    margin-top: 5px; /* Move the ping bar a few pixels lower */
+}
+
+.network-card .ping-log-info {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px 10px;
+    background-color: #2d2d44; /* Match the card background color */
+    color: #f0f4f8; /* Light text color for dark theme */
+    margin-top: 5px; /* Move the statistics a few pixels lower */
+}
+
+/* ...existing code... */
