@@ -10,6 +10,13 @@ const initProgressBar = document.getElementById('init-progress-bar');
 const initInfo = document.getElementById('init-info');
 const initInfoText = document.getElementById('init-info-text');
 
+socket.on('output', function(data) {
+    console.log('outputss:', data);
+    const outputDiv = document.getElementById('output');
+    outputDiv.textContent += data.message + '\n';
+    outputDiv.scrollTop = outputDiv.scrollHeight;
+});
+
 // Handle scan update event
 socket.on('scan_update', function(data) {
     const ip = data.ip;

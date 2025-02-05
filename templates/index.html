@@ -92,7 +92,7 @@
             <div id="networkCard{{ sanitized_name }}" class="col-md-4 mb-4 network-card">
                 <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg border rounded-3">
                     <div class="card-body">
-                        
+
                          <!-- Wi-Fi Icon and Name in the Same Row -->
                          <div class="d-flex align-items-center mb-3 mx-auto">
                             <i class="fas fa-network-wired fa-3x me-3"></i> <!-- Larger Icon with Margin -->
@@ -100,7 +100,7 @@
                             <h5 class="card-title mb-0 network-name" id="deviceNameLabel{{ sanitized_name }}">{{ name }}</h5>
                             <i class="fas fa-edit ms-2 edit-icon" id="editIcon{{ sanitized_name }}" style="cursor: pointer;"></i>
                         </div>
-                                                
+
                         <!-- Status Information -->
                         <div class="row">
                             <div class="col-12">
@@ -120,20 +120,24 @@
                             </div>
                             <!-- telnet button -->
                             <!-- <div class="col-12">
-                                <button class="btn btn-info mt-3" onclick="startTelnet('{{ name }}')">Telnet to {{ name }}</button>
+                                <button class="btn btn-info mt-3" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')">
+                                    <i class="fas fa-terminal"></i>
+                                </button>
                             </div> -->
-                            
+
                         </div>
 
                         <!-- Telnet Commands -->
-                        <!-- <div class="terminal" style="display:contents;">
-                            <div id="output" class="output"></div>
-                            <div class="input-line">
-                                <input id="commandInput" type="text" placeholder="Enter command..." />
-                                <button id="sendCommandBtn">Send</button>
+                        <div class="terminal" style="display:block;">
+                            <div id="output" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
+                            <div class="input-line d-flex mt-2">
+                                <button class="btn btn-info me-2" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')">
+                                    <i class="fas fa-terminal"></i>
+                                </button>
+                                <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." disabled />
+                                <button id="sendCommandBtn" class="btn btn-primary" disabled>Send</button>
                             </div>
-                            <button id="disconnectBtn">Disconnect</button>
-                        </div> -->
+                        </div>
 
                         <!-- Ping Logs Section (Collapsible) -->
                         <div class="ping-logs mt-4">
@@ -146,7 +150,7 @@
                                         <strong>Timestamp:</strong> {{ log.timestamp }}<br>
                                         <strong>Status:</strong> {{ log.status }}<br>
                                         <strong>Response Time:</strong> {{ log.response_time }} ms<br>
-                                        <strong>Time Ago:</strong> 
+                                        <strong>Time Ago:</strong>
                                     </div>
                                 </div>
                                 {% endfor %}

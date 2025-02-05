@@ -761,3 +761,31 @@ input.rename-device-input:focus {
     padding: 0;
     display: inline;
 }
+
+.terminal .output {
+    max-height: 200px;
+    overflow-y: auto;
+    text-align: left;
+    white-space: pre-wrap;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to the Telnet log */
+    background-color: #3a3a55; /* Use the input text color for the background */
+    color: #f0f4f8; /* Ensure text color is readable */
+    border: 1px solid #444c6a; /* Match the border style of the text box */
+    border-radius: 5px; /* Match the border radius of the text box */
+    padding: 10px; /* Add padding for better readability */
+}
+
+.terminal .input-line {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.terminal .input-line input {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.terminal .input-line button {
+    flex-shrink: 0;
+}

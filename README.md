@@ -17,9 +17,7 @@ This project provides a web-based interface to monitor the status of various net
 - **Scanning Subnets for Devices**: Scans each subnet for active devices and logs the active IPs found during the scan.
 - **Stop Scanning**: Ability to stop the subnet scanning process at any time.
 - **Logging**: Logs active IPs found during the subnet scan.
-
-## Missing Features (TBD)
-- **Telnet Interface**: Telnet server provides remote command execution capabilities.
+- **Telnet Interface**: Connect to network devices via Telnet and execute commands.
 
 ## Technologies Used
 
@@ -123,9 +121,11 @@ You can toggle between themes using the "Toggle Theme" button in the web interfa
 
 Hover over the ping log bars to view detailed information about each ping, including timestamp, status, response time, and time ago.
 
-### Telnet Support (TBD)
+### Telnet Support
 
-The application will support Telnet for remote device management. This feature is currently under development.
+1. Click the Telnet icon button next to the device.
+2. Enter commands in the input box and click "Send".
+3. The Telnet log box will display the output of the commands.
 
 ## Contributing
 
