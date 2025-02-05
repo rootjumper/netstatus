@@ -97,10 +97,12 @@
             <div id="networkCard{{ sanitized_name }}" class="col-md-4 network-card">
                 <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg">
                     <div class="card-header d-flex justify-content-between align-items-center position-relative">
-                        <div>
+                        <div class="d-flex align-items-center">
                             <i class="fas fa-network-wired me-2"></i>
-                            <span class="network-name">{{ name }}</span>
-                            <a href="http://{{ subnets[name] }}" target="_blank" class="network-ip">{{ subnets[name] }}</a>
+                            <span class="network-name" id="deviceNameLabel{{ sanitized_name }}">{{ name }}</span>
+                            <input type="text" class="form-control rename-device-input ms-2" id="deviceNameInput{{ sanitized_name }}" style="display: none; width: auto;">
+                            <a href="http://{{ subnets[name] }}" target="_blank" class="network-ip ms-2">{{ subnets[name] }}</a>
+                            <i class="fas fa-edit edit-icon ms-2" id="editIcon{{ sanitized_name }}" title="Edit Name" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Network Name"></i>
                         </div>
                         <div>
                             <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>

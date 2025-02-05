@@ -745,11 +745,8 @@ network-card .details .status {
 /* Hide rename device input fields by default */
 input.rename-device-input {
     display: none;
-}
-
-/* Show rename device input fields when they are focused */
-input.rename-device-input:focus {
-    display: inline-block;
+    width: auto; /* Adjust width to fit content */
+    max-width: 150px; /* Set a maximum width */
 }
 
 .tooltip {
@@ -989,6 +986,15 @@ footer a,
 
 .blockchainfont {
     color: #b0b3c5; /* Set the same font color */
+}
+
+/* ...existing code... */
+
+.wifi-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #6c757d; /* Adjust color as needed */
 }
 
 /* ...existing code... */
