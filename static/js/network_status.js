@@ -31,13 +31,12 @@ function updateNetworkUI(statuses) {
         if (networkCard) {
             const nameElement = networkCard.querySelector('.network-name');
             const pingLogContainer = networkCard.querySelector('.ping-log-container');
-            const statusDot = networkCard.querySelector('.status-dot');
             const statusBadge = networkCard.querySelector('.status-badge');
             const upsince = networkCard.querySelector('.status-upsince');
             const uptimeInfo = networkCard.querySelector('.uptime-info');
             const pingLogInfo = networkCard.querySelector('.ping-log-info');
 
-            if (statusDot && statusBadge) {
+            if (statusBadge) {
                 const latestPingLog = data.ping_logs[data.ping_logs.length - 1];
                 if (latestPingLog) {
                     const status = latestPingLog.status;
@@ -45,8 +44,6 @@ function updateNetworkUI(statuses) {
                     const statusClass = status === 'Up' ? 'bg-success' : 'bg-danger';
                     const dotClass = status === 'Up' ? 'text-success' : 'text-danger';
 
-                    statusDot.classList.remove('text-success', 'text-danger');
-                    statusDot.classList.add(dotClass);
                     statusBadge.classList.remove('bg-success', 'bg-danger');
                     statusBadge.classList.add(statusClass);
                     statusBadge.textContent = status;
@@ -63,7 +60,7 @@ function updateNetworkUI(statuses) {
             if (nameElement) nameElement.textContent = name;
 
             if (pingLogContainer) {
-                const maxPingLogs = 50; // Maximum number of ping logs to display
+                const maxPingLogs = 56; // Maximum number of ping logs to display
                 const pingLogs = data.ping_logs.slice(-maxPingLogs); // Get the last 'maxPingLogs' entries
 
                 pingLogContainer.innerHTML = pingLogs.map((log, index) => {

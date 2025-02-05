@@ -19,10 +19,6 @@ if (themeToggleBtn) {
             box.classList.toggle('light-theme');
             box.classList.toggle('black-yellow-theme');
         });
-        document.querySelectorAll('.status-dot').forEach(dot => {
-            dot.classList.toggle('light-theme');
-            dot.classList.toggle('black-yellow-theme');
-        });
         document.querySelectorAll('.status-badge').forEach(badge => {
             badge.classList.toggle('light-theme');
             badge.classList.toggle('black-yellow-theme');

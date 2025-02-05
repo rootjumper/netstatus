@@ -14,23 +14,23 @@
 <body class="dark-theme">
     <div class="container text-center">
         <!-- Title Bar -->
-        <div class="title-bar mt-5 mb-4">
+        <div class="title-bar mb-4">
             <div class="title">Network Status - freakyit</div>
             <div class="buttons">
                 <!-- Theme Toggle Button -->
-                <button class="btn btn-warning" id="theme-toggle-btn">
-                    <i class="fas fa-sun"></i> Toggle Theme
+                <button class="btn btn-warning" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="fas fa-sun"></i>
                 </button>
                 <!-- Init and Stop Buttons -->
-                <button class="btn btn-primary me-2" id="init-button" onclick="toggleScan()">
-                    <i class="fas fa-sync-alt"></i> Scan Network
+                <button class="btn btn-primary me-2" id="init-button" onclick="toggleScan()" title="Scan Network">
+                    <i class="fas fa-sync-alt"></i>
                 </button>
-                <button class="btn btn-danger" id="stop-button" onclick="stopScan()" style="display:none;">
-                    <i class="fas fa-stop"></i> Stop Scan
+                <button class="btn btn-danger" id="stop-button" onclick="stopScan()" style="display:none;" title="Stop Scan">
+                    <i class="fas fa-stop"></i>
                 </button>
                 <!-- Collapsible Form to Add New IP -->
-                <button class="btn btn-success" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm">
-                    <i class="fas fa-plus-circle"></i> Add Network
+                <button class="btn btn-success" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm" title="Add Network">
+                    <i class="fas fa-plus-circle"></i>
                 </button>
                 <!-- Download network.conf Button -->
                 <a class="btn btn-info" href="{{ url_for('download_network_conf') }}" download title="Download the current network configuration file">
@@ -46,7 +46,7 @@
                     <div id="countdown-timer" class="me-3">
                         <i class="fas fa-clock"></i> <span id="countdown-value">60</span>s
                     </div>
-                    <button class="btn btn-secondary" id="config-button">
+                    <button class="btn btn-secondary" id="config-button" title="Configuration">
                         <i class="fas fa-cog"></i>
                     </button>
                 </div>
@@ -108,9 +108,6 @@
                             </div>
                             <div class="col-12">
                                 <p>
-                                    <!-- Larger Status Dot -->
-                                    <i class="fas fa-circle {{ 'text-success' if data.status == 'Up' else 'text-danger' }} me-2 status-dot"></i>
-                                    <strong>Status:</strong>
                                     <!-- Larger Status Badge -->
                                     <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>
                                 </p>
@@ -135,7 +132,7 @@
                                 <input id="passwordInput" type="password" class="form-control me-2" placeholder="Password" />
                                 <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
                                 <button id="sendCommandBtn" class="btn btn-primary" style="display:none;">Send</button>
-                                <button class="btn btn-info me-2" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')">
+                                <button class="btn btn-info me-2" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
                                     <i class="fas fa-terminal"></i>
                                 </button>
                             </div>

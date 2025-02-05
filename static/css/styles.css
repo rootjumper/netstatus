@@ -3,17 +3,18 @@ body {
     background-color: #f0f4f8;
     color: #333;
     font-family: Arial, sans-serif;
+    padding-top: 60px; /* Adjust based on the height of the title bar */
 }
 
 /* Dark theme */
 body.dark-theme {
     background-color: #1e1e2f;
-    color: #f0f4f8;
+    color: #f0f4f8; /* Light text color for dark theme */
 }
 
 body.dark-theme .status-box {
     background-color: #2d2d44;
-    color: #f0f4f8;
+    color: #f0f4f8; /* Light text color for dark theme */
 }
 
 body.dark-theme .status-up {
@@ -39,13 +40,13 @@ body.dark-theme .status-down {
 
 body.dark-theme .ping-log-item {
     background-color: #3a3a55;
-    color: #f0f4f8;
+    color: #f0f4f8; /* Light text color for dark theme */
     border: 1px solid #444c6a;
 }
 
 body.dark-theme .accordion-button {
     background-color: #2d2d44;
-    color: #f0f4f8;
+    color: #f0f4f8; /* Light text color for dark theme */
     border: 1px solid #3a3a55;
 }
 
@@ -56,6 +57,53 @@ body.dark-theme .accordion-button:not(.collapsed) {
 
 body.dark-theme .accordion-button:focus {
     border-color: #33334b;
+}
+
+body.dark-theme .ping-log-item .badge.bg-success {
+    background-color: #28a745;
+}
+
+body.dark-theme .ping-log-item .badge.bg-danger {
+    background-color: #dc3545;
+}
+
+body.dark-theme footer {
+    background-color: #1c1c2e;
+    color: #f0f4f8; /* Light text color for dark theme */
+}
+
+body.dark-theme .card-body {
+    color: #f0f4f8; /* Light text color for dark theme */
+    background-color: #2d2d44; /* Dark background for card body */
+}
+
+body.dark-theme .form-control {
+    background-color: #3a3a55; /* Dark background for form control */
+    color: #f0f4f8; /* Light text color for form control */
+    border: 1px solid #444c6a; /* Border color for form control */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to textboxes */
+}
+
+body.dark-theme .form-control::placeholder {
+    color: #b0b3c5; /* Placeholder text color */
+}
+
+body.dark-theme .btn-primary {
+    background-color: #007bff; /* Primary button background color */
+    border-color: #007bff; /* Primary button border color */
+}
+
+body.dark-theme .btn-primary:hover {
+    background-color: #0056b3; /* Primary button hover background color */
+    border-color: #0056b3; /* Primary button hover border color */
+}
+
+body.dark-theme .card-title {
+    color: #f0f4f8; /* Light text color for dark theme */
+}
+
+body.dark-theme .title-bar {
+    background-color: #2d2d44; /* Darker background color for dark theme */
 }
 
 body.dark-theme .ping-log-item .badge.bg-success {
@@ -80,6 +128,7 @@ body.dark-theme .form-control {
     background-color: #3a3a55; /* Dark background for form control */
     color: #f0f4f8; /* Light text color for form control */
     border: 1px solid #444c6a; /* Border color for form control */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to textboxes */
 }
 
 body.dark-theme .form-control::placeholder {
@@ -100,11 +149,16 @@ body.dark-theme .card-title {
     color: #f0f4f8;
 }
 
+body.dark-theme .title-bar {
+    background-color: #2d2d44; /* Darker background color for dark theme */
+}
+
 /* Button customizations for dark theme */
 button.btn-info, button.btn-warning, button.btn-success {
     background-color: #6c757d;
     color: white;
     border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to Telnet button */
 }
 
 button.btn-info:hover, button.btn-warning:hover, button.btn-success:hover {
@@ -167,6 +221,7 @@ body:not(.dark-theme) .form-control {
     background-color: #ffffff; /* Light background for form control */
     color: #212529; /* Dark text color for form control */
     border: 1px solid #ced4da; /* Border color for form control */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow to textboxes */
 }
 
 body:not(.dark-theme) .form-control::placeholder {
@@ -185,6 +240,10 @@ body:not(.dark-theme) .btn-primary:hover {
 
 body:not(.dark-theme) .card-title {
     color: yellow;
+}
+
+body:not(.dark-theme) .title-bar {
+    background-color: #f8f9fa; /* Light background color for light theme */
 }
 
 /* Button customizations for light theme */
@@ -222,10 +281,6 @@ body.light-theme {
 .status-box.light-theme {
     background-color: #ffffff; /* White status box background */
     color: #212529; /* Dark text color */
-}
-
-.status-dot.light-theme {
-    color: #28a745; /* Green dot for "Up" status */
 }
 
 .status-badge.light-theme {
@@ -269,10 +324,6 @@ body.black-yellow-theme .btn-info:hover {
 .status-box.black-yellow-theme {
     background-color: #1e1e1e; /* Dark status box background */
     color: #f0b90b; /* Yellow text color */
-}
-
-.status-dot.black-yellow-theme {
-    color: #28a745; /* Green dot for "Up" status */
 }
 
 .status-badge.black-yellow-theme {
@@ -347,6 +398,8 @@ body.list-view .network-card {
     margin-right: 2px;
     position: relative;
     cursor: pointer; /* Change cursor to pointer to indicate clickability */
+    border-radius: 3px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to ping bars */
 }
 .ping-log-bar.success {
     background-color: #28a745; /* Green for 'Up' status */
@@ -356,8 +409,9 @@ body.list-view .network-card {
 }
 .ping-log-container {
     display: flex;
-    align-items: flex-end;
-    height: 250px; /* Adjust height as needed */
+    align-items: center;
+    justify-content: center;
+    height: 40px; /* Adjust height as needed */
     overflow-x: hidden; /* Disable horizontal scrollbar */
     overflow-y: visible; /* Ensure tooltips are visible */
     flex-direction: row-reverse; /* Display ping logs from right to left */
@@ -459,8 +513,13 @@ button:hover {
     align-items: center;
     width: 100%; /* Ensure the title bar spans the full width */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    position: fixed; /* Dock the title bar on top */
+    top: 0;
+    left: 0;
+    max-width: 100%; /* Set maximum width */
+    z-index: 1000; /* Ensure the title bar is above other elements */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to the title menu */
 }
-
 
 .title-bar .title {
     flex-grow: 1;
@@ -475,21 +534,20 @@ button:hover {
     background-color: #495057; /* Darker button background color */
     color: white;
     border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to buttons */
 }
 
 .title-bar .buttons .btn:hover {
     background-color: #343a40; /* Darker hover background color */
 }
 
-/* Style the 'Up' or 'Down' status dot */
-.status-dot {
-    font-size: 1.5rem;  /* Larger dot size */
-}
+
 
 /* Style the status badge to be larger */
 .status-badge {
     font-size: 1.2rem;  /* Increase badge size */
     padding: 0.4em 1em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 
@@ -545,7 +603,7 @@ network-card .details .status {
 }
 
 .network-card .status-up {
-    background-color: #2d2d44;
+    background-color: green;
     color: white;
     padding: 5px;
 }
@@ -558,6 +616,7 @@ network-card .details .status {
 
 .card-body {
     font-size: 1rem;
+    border-radius: 5px;
 }
 
 .card-title {
@@ -740,6 +799,8 @@ input.rename-device-input:focus {
     margin-right: 2px;
     position: relative;
     cursor: pointer; /* Change cursor to pointer to indicate clickability */
+    border-radius: 3px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to ping bars */
 }
 .ping-log-bar.success {
     background-color: #28a745; /* Green for 'Up' status */

@@ -118,8 +118,12 @@ def scan_subnet(subnet, session_id, scanned_subnets):
     return active_clients
 
 # Function to generate and update the network status
-def get_network_status():
-    subnets = load_subnets()
+def get_network_status(load_subnets_flag):
+    global subnets
+    if load_subnets_flag:
+        subnets = load_subnets()  # Reload the subnets from the configuration file
+   
+
     for name, ip in subnets.items():
         response_time = ping_ip(ip)
         status = "Up" if response_time is not None else "Down"
@@ -166,6 +170,10 @@ def get_network_status():
                 "response_time": "N/A"
             })
 
+        # Cap the ping logs to a maximum of 200 items
+        if len(statuses[name]["ping_logs"]) > 200:
+            statuses[name]["ping_logs"] = statuses[name]["ping_logs"][-200:]
+
 @app.route('/add_network', methods=['POST'])
 def add_network():
     try:
@@ -194,9 +202,10 @@ def add_network():
 # Endpoint to return the network status as JSON
 @app.route("/get_status")
 def get_status():
-    global subnets
-    subnets = load_subnets()  # Reload the subnets from the configuration file
-    get_network_status()  # Update the status
+    load_subnets_flag = request.args.get('load_subnets', 'false').lower() == 'true'
+    
+    get_network_status(load_subnets_flag)  # Update the status
+    
     return jsonify(statuses)
 
 @app.route('/init_network', methods=['GET'])
@@ -428,7 +437,7 @@ def upload_network_conf():
 
 @app.route("/")
 def index():
-    get_network_status()
+    get_network_status(load_subnets_flag=True)
     return render_template("index.html", statuses=statuses, subnets=subnets)
 
 @socketio.on('init_network')
