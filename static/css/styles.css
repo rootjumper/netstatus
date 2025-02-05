@@ -255,6 +255,17 @@ body.black-yellow-theme {
     border-color: #f0b90b; /* Yellow border color */
 }
 
+body.black-yellow-theme .btn-info {
+    background-color: #f0b90b; /* Yellow button background */
+    color: #000000; /* Black text color */
+    border-color: #f0b90b; /* Yellow border color */
+}
+
+body.black-yellow-theme .btn-info:hover {
+    background-color: #d4a00b; /* Darker yellow button hover background color */
+    border-color: #d4a00b; /* Darker yellow border color */
+}
+
 .status-box.black-yellow-theme {
     background-color: #1e1e1e; /* Dark status box background */
     color: #f0b90b; /* Yellow text color */
@@ -272,6 +283,27 @@ body.black-yellow-theme {
 .status-badge.black-yellow-theme.bg-danger {
     background-color: #dc3545; /* Red badge for "Down" status */
     color: #ffffff; /* White text color */
+}
+
+body.black-yellow-theme .form-control {
+    background-color: #1e1e1e; /* Dark background for form control */
+    color: #f0b90b; /* Yellow text color for form control */
+    border: 1px solid #f0b90b; /* Yellow border color for form control */
+}
+
+body.black-yellow-theme .form-control::placeholder {
+    color: #f0b90b; /* Yellow placeholder text color */
+}
+
+body.black-yellow-theme .btn-primary {
+    background-color: #f0b90b; /* Yellow button background color */
+    color: #000000; /* Black text color */
+    border-color: #f0b90b; /* Yellow border color */
+}
+
+body.black-yellow-theme .btn-primary:hover {
+    background-color: #d4a00b; /* Darker yellow button hover background color */
+    border-color: #d4a00b; /* Darker yellow border color */
 }
 
 /* View modes
@@ -478,16 +510,13 @@ button:hover {
 
 /* Network Card Layout Changes */
 .network-card {
-    flex: 1 1 20%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex: 1 1 30%; /* Makes sure cards take up 30% of the width (adjust as necessary) */
+    margin-bottom: 20px;
     padding: 5px;
     border-radius: 8px;
-    /* background-color: #0056b3; */
-    
-    background-color: #222336;
+    background-color: #2d2d44;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #444c6a; /* Match the border style of the text box */
 }
 
 .network-card .icon {
@@ -516,16 +545,14 @@ network-card .details .status {
 }
 
 .network-card .status-up {
-    background-color: #4567b7;
+    background-color: #2d2d44;
     color: white;
-    border-radius: 5px;
     padding: 5px;
 }
 
 .network-card .status-down {
     background-color: #dc3545;
     color: white;
-    border-radius: 5px;
     padding: 5px;
 }
 

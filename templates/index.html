@@ -90,7 +90,7 @@
             {% for name, data in statuses.items() %}
             {% set sanitized_name = name | replace(' ', '_') %}
             <div id="networkCard{{ sanitized_name }}" class="col-md-4 mb-4 network-card">
-                <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg border rounded-3">
+                <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg">
                     <div class="card-body">
 
                          <!-- Wi-Fi Icon and Name in the Same Row -->
