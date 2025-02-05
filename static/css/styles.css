@@ -4,7 +4,7 @@ body {
     color: #333;
     font-family: Arial, sans-serif;
     padding-top: 60px; /* Adjust based on the height of the title bar */
-    padding-bottom: 116px; /* Ensure space for the footer */
+    padding-bottom: 124px; /* Ensure space for the footer */
 }
 
 /* Dark theme */
