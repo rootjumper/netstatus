@@ -100,7 +100,7 @@
                         <div>
                             <i class="fas fa-network-wired me-2"></i>
                             <span class="network-name">{{ name }}</span>
-                            <span class="network-ip">{{ subnets[name] }}</span>
+                            <a href="http://{{ subnets[name] }}" target="_blank" class="network-ip">{{ subnets[name] }}</a>
                         </div>
                         <div>
                             <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>
@@ -186,11 +186,11 @@
                 <i class="fab fa-github"></i>
             </a>
             <br>
-            <i class="fab fa-bitcoin"></i> <span id="btc-address" class="clickable" onclick="copyToClipboardWithBlockchain('btc-address', 'BTC')">bc1pragmz2qhtm6qzrljvvlsayfhtwtrc5egk4yfa60wr3ks7xv0musq7l7dn5</span>
+            <i class="fab fa-bitcoin"></i> <span id="btc-address" class="clickable blockchainfont" onclick="copyToClipboardWithBlockchain('btc-address', 'BTC')">bc1pragmz2qhtm6qzrljvvlsayfhtwtrc5egk4yfa60wr3ks7xv0musq7l7dn5</span>
             
-            <i class="fab fa-ethereum"></i> <span id="evm-address" class="clickable" onclick="copyToClipboardWithBlockchain('evm-address', 'ETH')">0xA23B64E80a13F9ce54055F71b9d501AE92aBe378</span>
+            <i class="fab fa-ethereum"></i> <span id="evm-address" class="clickable blockchainfont" onclick="copyToClipboardWithBlockchain('evm-address', 'ETH')">0xA23B64E80a13F9ce54055F71b9d501AE92aBe378</span>
             
-            <img src="{{ url_for('static', filename='images/solana-icon.svg') }}" alt="Solana" class="solana-icon" style="width: 16px; height: 16px;"> <span id="sol-address" class="clickable" onclick="copyToClipboardWithBlockchain('sol-address', 'SOL')">EHi8PRa4t5Ge3EJ6GJF5omhpktFQdPdSeJKx78BCnJMP</span>
+            <img src="{{ url_for('static', filename='images/solana-icon.svg') }}" alt="Solana" class="solana-icon" style="width: 16px; height: 16px;"> <span id="sol-address" class="clickable blockchainfont" onclick="copyToClipboardWithBlockchain('sol-address', 'SOL')">EHi8PRa4t5Ge3EJ6GJF5omhpktFQdPdSeJKx78BCnJMP</span>
         </p>
     </footer>
     <div id="toast" class="toast">Copied to clipboard</div>
@@ -231,6 +231,9 @@
                     });
                 });
             });
+
+            // Request status updates
+            socket.emit('get_status', { load_subnets: true });
         });
     </script>
 </body>

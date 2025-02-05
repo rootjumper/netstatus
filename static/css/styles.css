@@ -930,7 +930,7 @@ input.rename-device-input:focus {
 /* ...existing code... */
 
 .network-card .card-header {
-    cursor: pointer;
+    cursor: default; /* Set cursor to normal */
     background-color: #2d2d44; /* Match the card background color */
     color: #f0f4f8; /* Light text color for dark theme */
     border-bottom: 1px solid #444c6a; /* Border color for header */
@@ -938,18 +938,30 @@ input.rename-device-input:focus {
     flex-direction: column; /* Stack elements vertically */
 }
 
+.network-card .card-header .network-name,
+.network-card .card-header .network-ip,
+.network-card .card-header .status-badge,
+footer,
+footer a,
+.network-card .ping-log-info,
+.title-bar .title,
+.uptime-info,
+.status-text,
+.time-ago,
+.uptime-percentage,
+.now {
+    font-size: 1rem; /* Set the same font size */
+    color: #b0b3c5; /* Set the same font color */
+}
+
 .network-card .card-header .network-name {
-    font-weight: bold;
+    font-family: 'Arial', sans-serif; /* Set font family */
+    font-weight: bold; /* Make text bold */
 }
 
 .network-card .card-header .network-ip {
     margin-left: 10px;
-    font-size: 0.9rem;
-    color: #b0b3c5; /* Lighter text color for IP */
-}
 
-.network-card .card-header .status-badge {
-    margin-left: 10px;
 }
 
 .network-card .ping-log-container {
@@ -971,6 +983,12 @@ input.rename-device-input:focus {
     background-color: #2d2d44; /* Match the card background color */
     color: #f0f4f8; /* Light text color for dark theme */
     margin-top: 5px; /* Move the statistics a few pixels lower */
+}
+
+/* ...existing code... */
+
+.blockchainfont {
+    color: #b0b3c5; /* Set the same font color */
 }
 
 /* ...existing code... */
