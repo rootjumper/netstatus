@@ -14,7 +14,7 @@
 <body class="dark-theme">
     <div class="container text-center">
         <!-- Title Bar -->
-        <div class="title-bar mb-4">
+        <div class="title-bar">
             <div class="title">Network Status - freakyit</div>
             <div class="buttons">
                 <!-- Theme Toggle Button -->
@@ -89,7 +89,7 @@
         <div id="network-container" class="row mt-2 grid-view">
             {% for name, data in statuses.items() %}
             {% set sanitized_name = name | replace(' ', '_') %}
-            <div id="networkCard{{ sanitized_name }}" class="col-md-4 mb-4 network-card">
+            <div id="networkCard{{ sanitized_name }}" class="col-md-4 network-card">
                 <div class="card status-box {{ 'status-up' if data.status == 'Up' else 'status-down' }} shadow-lg">
                     <div class="card-body">
 
@@ -109,11 +109,11 @@
                             <div class="col-12">
                                 <p>
                                     <!-- Larger Status Badge -->
-                                    <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>
+                                    <span class="badge {{ 'bg-success' if data.status == 'Up' else 'bg-danger' }} status-badge">{{ data.status }}</span>{{ data.up_since if data.up_since != 'N/A' else 'N/A' }}
                                 </p>
                             </div>
                             <div class="col-12">
-                                <p class="status-upsince"><i class="fas fa-calendar-alt"></i> <strong>Last Seen:</strong> {{ data.up_since if data.up_since != 'N/A' else 'N/A' }}</p>
+                                <!-- <p class="status-upsince"><i class="fas fa-calendar-alt"></i> <strong>Last Seen:</strong> </p> -->
                             </div>
                             <!-- telnet button -->
                             <!-- <div class="col-12">
@@ -129,10 +129,10 @@
                             <div id="output" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
                             <div class="input-line d-flex mt-2">
                                 <input id="usernameInput" type="text" class="form-control me-2" placeholder="Username" />
-                                <input id="passwordInput" type="password" class="form-control me-2" placeholder="Password" />
+                                <input id="passwordInput" type="password" class="form-control me-2 passwordInput" placeholder="Password" />
                                 <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
                                 <button id="sendCommandBtn" class="btn btn-primary" style="display:none;">Send</button>
-                                <button class="btn btn-info me-2" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
+                                <button class="btn btn-info me-2 telnetBtn" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
                                     <i class="fas fa-terminal"></i>
                                 </button>
                             </div>
@@ -140,7 +140,6 @@
 
                         <!-- Ping Logs Section (Collapsible) -->
                         <div class="ping-logs mt-4">
-                            <i class="fas fa-poll"></i> Ping Status
                             <div class="ping-log-container">
                                 {% set max_ping_logs = 50 %}
                                 {% for log in data.ping_logs[-max_ping_logs:] %}
@@ -202,9 +201,9 @@
             </a>
             <br>
             <i class="fab fa-bitcoin"></i> <span id="btc-address" class="clickable" onclick="copyToClipboard('btc-address')">bc1pragmz2qhtm6qzrljvvlsayfhtwtrc5egk4yfa60wr3ks7xv0musq7l7dn5</span>
-            <br>
+            
             <i class="fab fa-ethereum"></i> <span id="evm-address" class="clickable" onclick="copyToClipboard('evm-address')">0xA23B64E80a13F9ce54055F71b9d501AE92aBe378</span>
-            <br>
+            
             <img src="{{ url_for('static', filename='images/solana-icon.svg') }}" alt="Solana" class="solana-icon" style="width: 16px; height: 16px;"> <span id="sol-address" class="clickable" onclick="copyToClipboard('sol-address')">EHi8PRa4t5Ge3EJ6GJF5omhpktFQdPdSeJKx78BCnJMP</span>
         </p>
     </footer>

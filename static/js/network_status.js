@@ -47,8 +47,9 @@ function updateNetworkUI(statuses) {
                     statusBadge.classList.remove('bg-success', 'bg-danger');
                     statusBadge.classList.add(statusClass);
                     statusBadge.textContent = status;
+                    statusBadge.textContent = `\n${latestPingLog.timestamp}`;
 
-                    upsince.innerHTML = `<strong>Last Seen:</strong> ${latestPingLog.timestamp}`;
+                    //upsince.innerHTML = `<strong>Last Seen:</strong> ${latestPingLog.timestamp}`;
 
                     const statusText = networkCard.querySelector('.status-text');
                     if (statusText) {
@@ -208,3 +209,14 @@ setInterval(updateCountdown, 1000);
 
 fetchNetworkStatus();
 let pingIntervalId = setInterval(fetchNetworkStatus, pingInterval);
+
+document.querySelectorAll('.passwordInput').forEach(input => {
+    input.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            const telnetButton = this.closest('.terminal').querySelector('.telnetBtn');
+            if (telnetButton) {
+                telnetButton.click();
+            }
+        }
+    });
+});

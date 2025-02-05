@@ -4,6 +4,7 @@ body {
     color: #333;
     font-family: Arial, sans-serif;
     padding-top: 60px; /* Adjust based on the height of the title bar */
+    padding-bottom: 116px; /* Ensure space for the footer */
 }
 
 /* Dark theme */
@@ -376,7 +377,6 @@ body.list-view .network-card {
 
 .status-box {
     border-radius: 10px;
-    margin-bottom: 20px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -456,6 +456,11 @@ footer {
     text-align: center;
     padding: 10px;
     font-size: 0.9rem;
+    position: fixed; /* Ensure footer is always shown */
+    bottom: 0;
+    width: 100%;
+    background-color: #1c1c2e; /* Match the footer background color */
+    color: #f0f4f8; /* Match the footer text color */
 }
 
 footer a {
@@ -531,7 +536,7 @@ button:hover {
 }
 
 .title-bar .buttons .btn {
-    background-color: #495057; /* Darker button background color */
+    background-color: #132433; /* Darker button background color */
     color: white;
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to buttons */
@@ -541,7 +546,48 @@ button:hover {
     background-color: #343a40; /* Darker hover background color */
 }
 
+/* Progress bar and status text in the title bar */
+.title-bar-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
 
+.title-bar-progress .progress {
+    width: 100%;
+    height: 20px;
+}
+
+.title-bar-progress #init-info {
+    text-align: center;
+    font-size: 1rem;
+    color: #f0f4f8;
+}
+
+/* Config button color */
+#config-button {
+    border: none;
+    background-color: #6c757d; /* Config button color */
+    color: white;
+    cursor: pointer;
+}
+
+#config-button:hover {
+    background-color: #5a6268; /* Darker shade for hover effect */
+}
+
+/* Apply the same color to other buttons */
+button.btn-info, button.btn-warning, button.btn-success, button.btn-primary, button.btn-danger {
+    background-color: #132433; /* Config button color */
+    color: white;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to buttons */
+}
+
+button.btn-info:hover, button.btn-warning:hover, button.btn-success:hover, button.btn-primary:hover, button.btn-danger:hover {
+    background-color: #5a6268; /* Darker shade for hover effect */
+}
 
 /* Style the status badge to be larger */
 .status-badge {
@@ -774,7 +820,7 @@ input.rename-device-input:focus {
 
 .network-card {
     flex: 1 1 30%; /* Makes sure cards take up 30% of the width (adjust as necessary) */
-    margin-bottom: 20px;
+    margin-bottom: 2px;
 }
 
 .network-card .card-body {
