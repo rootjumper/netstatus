@@ -7,6 +7,8 @@ async function toggleTelnet(routerName) {
     const outputDiv = networkCard.querySelector('#output');
     const commandInput = networkCard.querySelector('#commandInput');
     const sendCommandBtn = networkCard.querySelector('#sendCommandBtn');
+    const usernameInput = networkCard.querySelector('#usernameInput');
+    const passwordInput = networkCard.querySelector('#passwordInput');
 
     const sendCommandHandler = function() {
         const command = commandInput.value.trim();
@@ -33,6 +35,12 @@ async function toggleTelnet(routerName) {
         sendCommandBtn.removeEventListener('click', sendCommandHandler);
         commandInput.disabled = true;
         sendCommandBtn.disabled = true;
+        commandInput.style.display = 'none';
+        sendCommandBtn.style.display = 'none';
+        usernameInput.disabled = false;
+        passwordInput.disabled = false;
+        usernameInput.style.display = 'block';
+        passwordInput.style.display = 'block';
     } else {
         // Connect Telnet
         const socket = io({
@@ -65,6 +73,12 @@ async function toggleTelnet(routerName) {
                     telnetBtn.classList.add('btn-success');
                     commandInput.disabled = false;
                     sendCommandBtn.disabled = false;
+                    commandInput.style.display = 'block';
+                    sendCommandBtn.style.display = 'block';
+                    usernameInput.disabled = true;
+                    passwordInput.disabled = true;
+                    usernameInput.style.display = 'none';
+                    passwordInput.style.display = 'none';
                 });
 
                 telnetSocket.on('disconnect', function() {
@@ -77,6 +91,12 @@ async function toggleTelnet(routerName) {
                     telnetBtn.classList.add('btn-info');
                     commandInput.disabled = true;
                     sendCommandBtn.disabled = true;
+                    commandInput.style.display = 'none';
+                    sendCommandBtn.style.display = 'none';
+                    usernameInput.disabled = false;
+                    passwordInput.disabled = false;
+                    usernameInput.style.display = 'block';
+                    passwordInput.style.display = 'block';
                 });
 
                 telnetSocket.on('error', function(error) {
@@ -102,8 +122,11 @@ async function toggleTelnet(routerName) {
             console.error("socket error:", error);
         });
 
+        const username = usernameInput.value.trim() || 'root';
+        const password = passwordInput.value.trim() || 'root';
+
         outputDiv.setAttribute('style', 'display: block;');
         outputDiv.innerHTML = 'Connecting...<br>';
-        socket.emit('start_telnet', { router_name: routerName });
+        socket.emit('start_telnet', { router_name: routerName, username: username, password: password });
     }
 }

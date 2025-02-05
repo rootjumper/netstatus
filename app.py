@@ -290,14 +290,14 @@ def get_websocket_port(ip_address):
     return 5100 + subnet_last_digit  # Based on x.x.10.x, x.x.11.x, etc.
 
 # Handle WebSocket commands from the frontend
-def start_telnet_session(namespace, router_ip):
+def start_telnet_session(namespace, router_ip, username, password):
     try:
         tn = telnetlib.Telnet(router_ip)
         telnet_sessions[namespace] = tn
         tn.read_until(b"login: ", timeout=5)
-        tn.write(b"root\n")
+        tn.write(username.encode('ascii') + b"\n")
         tn.read_until(b"Password: ", timeout=5)
-        tn.write(b"root\n")
+        tn.write(password.encode('ascii') + b"\n")
         tn.read_until(b"#", timeout=5)
         tn.write(b"\r\n")
         outputLogin = tn.read_until(b"#", timeout=5).decode('utf-8')
@@ -342,6 +342,8 @@ def start_telnet_session(namespace, router_ip):
 @socketio.on('start_telnet')
 def start_telnet(data):
     router_name = data.get('router_name')
+    username = data.get('username', 'root')  # Default to 'root' if not provided
+    password = data.get('password', 'root')  # Default to 'root' if not provided
     router_ips = load_subnets()
     router_ip = router_ips.get(router_name)
     
@@ -353,7 +355,7 @@ def start_telnet(data):
     namespace = f"/telnet_{websocket_port}"
 
     # send first message that we get connection for this telnet
-    threading.Thread(target=start_telnet_session, args=(namespace, router_ip)).start()
+    threading.Thread(target=start_telnet_session, args=(namespace, router_ip, username, password)).start()
     emit('output', {'message': f"Starting Telnet session for {router_name}", 'namespace': namespace}, room=request.sid)
     #emit('output', {'message': f"Telnet session started for {router_name}", 'namespace': namespace}, room=request.sid)
 

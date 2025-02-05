@@ -131,11 +131,13 @@
                         <div class="terminal" style="display:block;">
                             <div id="output" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
                             <div class="input-line d-flex mt-2">
+                                <input id="usernameInput" type="text" class="form-control me-2" placeholder="Username" />
+                                <input id="passwordInput" type="password" class="form-control me-2" placeholder="Password" />
+                                <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
+                                <button id="sendCommandBtn" class="btn btn-primary" style="display:none;">Send</button>
                                 <button class="btn btn-info me-2" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')">
                                     <i class="fas fa-terminal"></i>
                                 </button>
-                                <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." disabled />
-                                <button id="sendCommandBtn" class="btn btn-primary" disabled>Send</button>
                             </div>
                         </div>
 
