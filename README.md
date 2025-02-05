@@ -127,6 +127,8 @@ Hover over the ping log bars to view detailed information about each ping, inclu
 2. Enter commands in the input box and click "Send".
 3. The Telnet log box will display the output of the commands.
 
+![Telnet Interface](telnet.png)
+
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request with your changes.
