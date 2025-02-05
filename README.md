@@ -95,6 +95,15 @@ ports:
 ```
 The format is `host_port:container_port`. Replace the first `5000` with your desired host port number, and the second `5000` with the container port number if needed. Ensure that the `container_port` matches the port specified in `app.py`.
 
+### Logging Configuration
+
+The application uses Python's built-in `logging` module for logging. By default, the logging level is set to `INFO`. You can change the logging level by modifying the `logging.basicConfig` call in the `app.py` file:
+```python
+import logging
+logging.basicConfig(level=logging.INFO)
+```
+Replace `INFO` with your desired logging level (e.g., `DEBUG`, `WARNING`, `ERROR`, `CRITICAL`).
+
 ### Themes
 
 The application supports multiple themes:
