@@ -13,6 +13,7 @@ import logging
 from flask import Flask, request, render_template, jsonify, send_file, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 from werkzeug.utils import secure_filename
+import paramiko
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -23,6 +24,8 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 # Dictionary to store Telnet session for each user (using socket session id)
 telnet_sessions = {}
 
+# Dictionary to store SSH session for each user (using socket session id)
+ssh_sessions = {}
 
 # Example of network subnets
 default_subnets = {
@@ -374,6 +377,56 @@ def start_telnet(data):
     threading.Thread(target=start_telnet_session, args=(namespace, router_ip, username, password)).start()
     emit('output', {'message': f"Starting Telnet session for {router_name}", 'namespace': namespace}, room=request.sid)
     #emit('output', {'message': f"Telnet session started for {router_name}", 'namespace': namespace}, room=request.sid)
+
+# Function to start SSH session
+def start_ssh_session(namespace, router_ip, username, password):
+    try:
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(router_ip, username=username, password=password)
+        ssh_sessions[namespace] = ssh
+
+        stdin, stdout, stderr = ssh_sessions[namespace].exec_command('\n');
+        output = stdout.read().decode('utf-8') + stderr.read().decode('utf-8')
+        
+        # Send a welcome message to the client
+        socketio.emit('ssh_output', {'message': f"Connected to {router_ip}\r\nType 'exit' to disconnect."}, namespace=namespace)
+        
+        @socketio.on('ssh_command', namespace=namespace)
+        def handle_ssh_command(data):
+            command = data.get('command')
+            if namespace in ssh_sessions and command:
+                stdin, stdout, stderr = ssh_sessions[namespace].exec_command(command)
+                output = stdout.read().decode('utf-8') + stderr.read().decode('utf-8')
+
+                if command.lower() == 'exit':
+                    ssh_sessions[namespace].close()
+                    del ssh_sessions[namespace]
+                    socketio.emit('disconnect', namespace=namespace)
+                    return
+
+                socketio.emit('ssh_output', {'message': output}, namespace=namespace)
+
+    except Exception as e:
+        socketio.emit('ssh_output', {'message': f"Error: {str(e)}"}, namespace=namespace)
+
+@socketio.on('start_ssh')
+def start_ssh(data):
+    router_name = data.get('router_name')
+    username = data.get('username', 'root')
+    password = data.get('password', 'root')
+    router_ips = load_subnets()
+    router_ip = router_ips.get(router_name)
+    
+    if not router_ip:
+        emit('ssh_output', {'message': "Router not found"}, room=request.sid)
+        return
+    
+    websocket_port = get_websocket_port(router_ip)
+    namespace = f"/ssh_{websocket_port}"
+
+    threading.Thread(target=start_ssh_session, args=(namespace, router_ip, username, password)).start()
+    emit('ssh_output', {'message': f"Starting SSH session for {router_name}", 'namespace': namespace}, room=request.sid)
 
 @app.route('/get_subnets')
 def get_subnets():

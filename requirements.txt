@@ -13,6 +13,7 @@ idna==3.10
 itsdangerous==2.2.0
 Jinja2==3.1.5
 MarkupSafe==3.0.2
+paramiko==2.11.0
 ping3==4.0.8
 python-dotenv==0.19.2
 python-engineio==4.11.2

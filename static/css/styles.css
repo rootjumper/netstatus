@@ -998,3 +998,27 @@ footer a,
 }
 
 /* ...existing code... */
+button.sshBtn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+button.sshBtn:hover {
+    background-color: #5a6268;
+}
+
+.terminal .sshOutput {
+    max-height: 200px;
+    overflow-y: auto;
+    text-align: left;
+    white-space: pre-wrap;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: #3a3a55;
+    color: #f0f4f8;
+    border: 1px solid #444c6a;
+    border-radius: 5px;
+    padding: 10px;
+}
+/* ...existing code... */

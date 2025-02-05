@@ -154,16 +154,32 @@
                         <div class="card-body">
                             <!-- Telnet Commands -->
                             <div class="terminal" style="display:block;">
-                                <div id="output" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
+                                <div id="output{{ sanitized_name }}" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
                                 <div class="input-line d-flex mt-2">
-                                    <input id="usernameInput" type="text" class="form-control me-2" placeholder="Username" />
-                                    <input id="passwordInput" type="password" class="form-control me-2 passwordInput" placeholder="Password" />
-                                    <input id="commandInput" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
-                                    <button id="sendCommandBtn" class="btn btn-primary" style="display:none;">Send</button>
+                                    <input id="usernameInput{{ sanitized_name }}" type="text" class="form-control me-2" placeholder="Username" value="" />
+                                    <input id="passwordInput{{ sanitized_name }}" type="password" class="form-control me-2 passwordInput" placeholder="Password" value="" />
+                                    <input id="commandInput{{ sanitized_name }}" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
+                                    <button id="sendCommandBtn{{ sanitized_name }}" class="btn btn-primary" style="display:none;">Send</button>
                                     <button class="btn btn-info me-2 telnetBtn" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
                                         <i class="fas fa-terminal"></i>
                                     </button>
                                     <button class="btn btn-secondary me-2" id="downloadLogBtn{{ sanitized_name }}" onclick="downloadTelnetLog('{{ sanitized_name }}')" title="Download Log" style="display: none;">
+                                        <i class="fas fa-file-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- SSH Commands -->
+                            <div class="terminal" style="display:block;">
+                                <div id="sshOutput{{ sanitized_name }}" style="display:none;" class="output log-shadow" style="max-height: 200px; overflow-y: auto; text-align: left; white-space: pre-wrap;" ></div>
+                                <div class="input-line d-flex mt-2">
+                                    <input id="sshUsernameInput{{ sanitized_name }}" type="text" class="form-control me-2" placeholder="Username" value="" />
+                                    <input id="sshPasswordInput{{ sanitized_name }}" type="password" class="form-control me-2 passwordInput" placeholder="Password" value="" />
+                                    <input id="sshCommandInput{{ sanitized_name }}" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
+                                    <button id="sendSSHCommandBtn{{ sanitized_name }}" class="btn btn-primary" style="display:none;">Send</button>
+                                    <button class="btn btn-info me-2 sshBtn" id="sshBtn{{ sanitized_name }}" onclick="toggleSSH('{{ name }}')" title="SSH">
+                                        <i class="fas fa-terminal"></i>
+                                    </button>
+                                    <button class="btn btn-secondary me-2" id="downloadSSHLogBtn{{ sanitized_name }}" onclick="downloadSSHLog('{{ sanitized_name }}')" title="Download SSH Log" style="display: none;">
                                         <i class="fas fa-file-download"></i>
                                     </button>
                                 </div>
@@ -208,6 +224,7 @@
     <script src="{{ url_for('static', filename='js/edit_device.js') }}"></script>
     <script src="{{ url_for('static', filename='js/scan_toggle.js') }}"></script>
     <script src="{{ url_for('static', filename='js/copy_to_clipboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ssh.js') }}"></script>
     <!-- Remove tooltip_handler.js -->
     <!-- <script src="{{ url_for('static', filename='js/tooltip_handler.js') }}"></script> -->
 

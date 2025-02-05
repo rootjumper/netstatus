@@ -18,6 +18,7 @@ This project provides a web-based interface to monitor the status of various net
 - **Stop Scanning**: Ability to stop the subnet scanning process at any time.
 - **Logging**: Logs active IPs found during the subnet scan.
 - **Telnet Interface**: Connect to network devices via Telnet and execute commands.
+- **SSH Interface**: Connect to network devices via SSH and execute commands.
 
 ## Technologies Used
 
@@ -25,6 +26,7 @@ This project provides a web-based interface to monitor the status of various net
 - **Frontend**: HTML, CSS, JavaScript (Bootstrap, FontAwesome)
 - **WebSocket**: `flask-socketio` for real-time communication
 - **Telnet**: Python `telnetlib` for Telnet interactions
+- **SSH**: Python `paramiko` for SSH interactions
 
 ## Installation
 
@@ -137,6 +139,14 @@ Hover over the ping log bars to view detailed information about each ping, inclu
 3. The Telnet log box will display the output of the commands.
 
 ![Telnet Interface](telnet.png)
+
+### SSH Support
+
+1. Enter Username/Password and click the SSH icon button next to the device.
+2. Enter commands in the input box and click "Send".
+3. The SSH log box will display the output of the commands.
+
+![SSH Interface](ssh.png)
 
 ## Contributing
 
