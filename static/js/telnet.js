@@ -20,6 +20,13 @@ async function toggleTelnet(routerName) {
             telnetSockets[sanitizedRouterName].emit('telnet_command', { command: '\r' });
             commandInput.value = '';
         }
+        commandInput.focus(); // Refocus the textbox for the next command
+    };
+
+    const handleEnterKey = function(event) {
+        if (event.key === 'Enter') {
+            sendCommandHandler();
+        }
     };
 
     if (telnetSockets[sanitizedRouterName]) {
@@ -33,6 +40,7 @@ async function toggleTelnet(routerName) {
         telnetBtn.classList.add('btn-info');
         outputDiv.innerHTML += '<br>Disconnected<br>';
         sendCommandBtn.removeEventListener('click', sendCommandHandler);
+        commandInput.removeEventListener('keydown', handleEnterKey);
         commandInput.disabled = true;
         sendCommandBtn.disabled = true;
         commandInput.style.display = 'none';
@@ -65,6 +73,7 @@ async function toggleTelnet(routerName) {
                 });
 
                 sendCommandBtn.addEventListener('click', sendCommandHandler);
+                commandInput.addEventListener('keydown', handleEnterKey);
 
                 telnetSocket.on('connect', function() {
                     console.log("telnetSocket connected.");
@@ -79,11 +88,13 @@ async function toggleTelnet(routerName) {
                     passwordInput.disabled = true;
                     usernameInput.style.display = 'none';
                     passwordInput.style.display = 'none';
+                    commandInput.focus(); // Focus the textbox for the first command
                 });
 
                 telnetSocket.on('disconnect', function() {
                     console.log("telnetSocket disconnected.");
                     sendCommandBtn.removeEventListener('click', sendCommandHandler);
+                    commandInput.removeEventListener('keydown', handleEnterKey);
                     telnetSockets[sanitizedRouterName].close();
                     delete telnetSockets[sanitizedRouterName];
                     telnetBtn.innerHTML = '<i class="fas fa-terminal"></i>';
