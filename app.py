@@ -9,9 +9,13 @@ import platform
 import os
 import time
 import ping3
+import logging
 from flask import Flask, request, render_template, jsonify, send_file, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 from werkzeug.utils import secure_filename
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -39,9 +43,9 @@ def save_subnets(subnets):
         with subnet_lock:
             with open(network_conf_path, 'w') as conf_file:
                 json.dump({"subnets": subnets}, conf_file, indent=4)
-        print(f"Subnets saved to {network_conf_path}: {subnets}")
+        logging.info(f"Subnets saved to {network_conf_path}: {subnets}")
     except Exception as e:
-        print(f"Error saving to network.conf: {e}")
+        logging.error(f"Error saving to network.conf: {e}")
         
 # Load subnets from network.conf if it exists
 def load_subnets():
@@ -50,10 +54,10 @@ def load_subnets():
             with open(network_conf_path, 'r') as conf_file:
                 network_config = json.load(conf_file)
                 subnets = network_config.get('subnets', {})
-                print(f"Subnets loaded from {network_conf_path}: {subnets}")
+                logging.info(f"Subnets loaded from {network_conf_path}: {subnets}")
                 return subnets
     except Exception as e:
-        print(f"Error loading network.conf: {e}")
+        logging.error(f"Error loading network.conf: {e}")
         return default_subnets  # Return default if there's an error
 
 # Load the subnets at the start
@@ -70,11 +74,14 @@ def ping_ip(ip):
     try:
         with ping_lock:
             response_time = ping3.ping(ip, 1)
-        if response_time is not False:
+        if response_time is not None and response_time is not False:
+            logging.info(f"Ping to {ip} successful, response time: {response_time * 1000} ms")
             return response_time * 1000  # Convert to milliseconds
         else:
+            logging.warning(f"Ping to {ip} failed")
             return None
     except Exception as e:
+        logging.error(f"Error pinging {ip}: {e}")
         return None
 
 # Variable to control scanning
@@ -84,7 +91,7 @@ scanning = True
 def scan_subnet(subnet, session_id, scanned_subnets):
     global scanning
     if subnet in scanned_subnets:
-        print(f"Subnet {subnet} already scanned. Skipping...")
+        logging.info(f"Subnet {subnet} already scanned. Skipping...")
         return []
 
     active_clients = []
@@ -100,7 +107,7 @@ def scan_subnet(subnet, session_id, scanned_subnets):
         response_time = ping_ip(ip)
         if response_time is not None:
             active_clients.append(ip)
-            print(f"Found active IP: {ip} with response time: {response_time}ms")
+            logging.info(f"Found active IP: {ip} with response time: {response_time}ms")
             
             # Load the current subnets from the file
             subnets = load_subnets()
@@ -267,7 +274,7 @@ def init_network():
                 # Save updated config
                 with open('network.conf', 'w') as conf_file:
                     json.dump(network_config, conf_file, indent=4)
-                print(f"Updated network.conf with new subnets: {missing_subnets}")
+                logging.info(f"Updated network.conf with new subnets: {missing_subnets}")
 
             subnets = load_subnets()
 
@@ -503,7 +510,7 @@ def handle_init_network():
                 # Save updated config
                 with open('network.conf', 'w') as conf_file:
                     json.dump(network_config, conf_file, indent=4)
-                print(f"Updated network.conf with new subnets: {missing_subnets}")
+                logging.info(f"Updated network.conf with new subnets: {missing_subnets}")
 
             subnets = load_subnets()
 
