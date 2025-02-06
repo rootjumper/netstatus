@@ -24,11 +24,14 @@
     <div class="container text-center">
         <!-- Title Bar -->
         <div class="title-bar">
-            <div class="title">Network Status - freakyit</div>
-            <div class="buttons">
+            <div class="title mx-auto text-center">Network Status</div>
+            <div class="buttons mx-auto">
                 <!-- Init and Stop Buttons -->
                 <button class="btn btn-primary me-2" id="init-button" onclick="toggleScan()" title="Scan Network">
-                    <i class="fas fa-sync-alt"></i>
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="btn btn-secondary me-2" id="ping-button" onclick="forceReloadAndPing()" title="Force Reload Config and Ping">
+                    <i class="fas fa-broadcast-tower"></i>
                 </button>
                 <button class="btn btn-danger" id="stop-button" onclick="stopScan()" style="display:none;" title="Stop Scan">
                     <i class="fas fa-stop"></i>

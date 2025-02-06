@@ -528,6 +528,7 @@ button:hover {
 
 .title-bar .title {
     flex-grow: 1;
+    text-align: center; /* Center the application name */
 }
 
 .title-bar .buttons {

@@ -1,5 +1,6 @@
-function fetchNetworkStatus() {
-    fetch("/get_status")
+function fetchNetworkStatus(reload = false) {
+    const url = reload ? "/get_status?reload=true" : "/get_status";
+    fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -220,3 +221,7 @@ document.querySelectorAll('.passwordInput').forEach(input => {
         }
     });
 });
+
+function forceReloadAndPing() {
+    fetchNetworkStatus(true); // Call fetchNetworkStatus with reload flag
+}

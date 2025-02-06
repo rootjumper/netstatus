@@ -212,7 +212,7 @@ def add_network():
 # Endpoint to return the network status as JSON
 @app.route("/get_status")
 def get_status():
-    load_subnets_flag = request.args.get('load_subnets', 'false').lower() == 'true'
+    load_subnets_flag = request.args.get('reload', 'false').lower() == 'true'
     
     get_network_status(load_subnets_flag)  # Update the status
     
