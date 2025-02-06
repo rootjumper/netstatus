@@ -129,10 +129,19 @@ def scan_subnet(subnet, session_id, scanned_subnets):
 
 # Function to generate and update the network status
 def get_network_status(load_subnets_flag):
-    global subnets
+    global subnets, statuses
     if load_subnets_flag:
         subnets = load_subnets()  # Reload the subnets from the configuration file
-   
+        # Sync statuses with the new subnets list
+        new_statuses = {}
+        for name, ip in subnets.items():
+            if name in statuses:
+                new_statuses[name] = statuses[name]
+            
+        statuses = new_statuses
+
+    # Remove any statuses not in the subnets list
+    statuses = {name: status for name, status in statuses.items() if name in subnets}
 
     for name, ip in subnets.items():
         response_time = ping_ip(ip)
@@ -147,7 +156,6 @@ def get_network_status(load_subnets_flag):
         if status == "Up":
             if name in statuses:
                 last_seen_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms' if status == "Up" else "N/A"
-                
             else:
                 last_seen_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms'
         else:

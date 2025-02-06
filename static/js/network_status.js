@@ -225,3 +225,14 @@ document.querySelectorAll('.passwordInput').forEach(input => {
 function forceReloadAndPing() {
     fetchNetworkStatus(true); // Call fetchNetworkStatus with reload flag
 }
+
+function updateCurrentDateTime() {
+    const now = new Date();
+    const formattedDateTime = now.toLocaleString().replace(', ', ' - ');
+    const dateTimeElement = document.getElementById('current-datetime');
+    dateTimeElement.textContent = formattedDateTime;
+    dateTimeElement.classList.add('datetime-color'); // Add the class to the element
+}
+
+// Update the date and time every second
+setInterval(updateCurrentDateTime, 1000);

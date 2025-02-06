@@ -24,6 +24,10 @@
     <div class="container text-center">
         <!-- Title Bar -->
         <div class="title-bar">
+            <div id="current-datetime" class="text-start datetime-color"></div>
+            <div id="countdown-timer" class="ms-3 me-3 datetime-color">
+                <i class="fas fa-clock"></i> <span id="countdown-value">60</span>s
+            </div>
             <div class="title mx-auto text-center">Network Status</div>
             <div class="buttons mx-auto">
                 <!-- Init and Stop Buttons -->
@@ -49,15 +53,10 @@
                 <button type="button" class="btn btn-warning" onclick="document.getElementById('fileInput').click()" title="Upload a new network configuration file">
                     <i class="fas fa-upload"></i>
                 </button>
-                <!-- Countdown Timer and Config Button -->
-                <div class="d-flex align-items-center">
-                    <div id="countdown-timer" class="me-3">
-                        <i class="fas fa-clock"></i> <span id="countdown-value">60</span>s
-                    </div>
-                    <button class="btn btn-secondary" id="config-button" title="Configuration">
-                        <i class="fas fa-cog"></i>
-                    </button>
-                </div>
+                <!-- Config Button -->
+                <button class="btn btn-secondary" id="config-button" title="Configuration">
+                    <i class="fas fa-cog"></i>
+                </button>
             </div>
         </div>
 

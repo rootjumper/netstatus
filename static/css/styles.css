@@ -117,7 +117,7 @@ body.dark-theme .ping-log-item .badge.bg-danger {
 
 body.dark-theme footer {
     background-color: #1c1c2e;
-    color: #f0f4f8;
+    color: #6c757d;
 }
 
 body.dark-theme .card-body {
@@ -1022,4 +1022,27 @@ button.sshBtn:hover {
     border-radius: 5px;
     padding: 10px;
 }
+
+/* ...existing code... */
+
+#current-datetime {
+    color: #6c757d; /* Light text color for dark theme */
+}
+
+/* ...existing code... */
+
+.datetime-color {
+    color: #6c757d; /* Same color as countdown timer */
+}
+
+/* ...existing code... */
+
+.fab.fa-bitcoin {
+    color: #f7931a; /* Bitcoin orange color */
+}
+
+.fab.fa-ethereum {
+    color: #3c3c3d; /* Ethereum gray color */
+}
+
 /* ...existing code... */
