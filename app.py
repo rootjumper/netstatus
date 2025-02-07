@@ -16,7 +16,7 @@ from werkzeug.utils import secure_filename
 import paramiko
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.ERROR)
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")

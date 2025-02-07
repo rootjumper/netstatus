@@ -1046,3 +1046,36 @@ button.sshBtn:hover {
 }
 
 /* ...existing code... */
+
+body.dark-theme .btn-dark-theme {
+    background-color: #132433; /* Darker background color */
+    border-color: #343a40;
+    color: #ffffff;
+}
+
+body.dark-theme .btn-custom {
+    background-color: #17a2b8; /* Same color as Telnet button */
+    border-color: #17a2b8;
+    color: #ffffff;
+}
+
+body.dark-theme .btn-primary,
+body.dark-theme .btn-secondary,
+body.dark-theme .btn-success,
+body.dark-theme .btn-info,
+body.dark-theme .btn-warning,
+body.dark-theme .btn-danger {
+    background-color: #132433; /* Darker background color */
+    border-color: #343a40;
+    color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow to buttons */
+}
+
+body.dark-theme .btn-primary:hover,
+body.dark-theme .btn-secondary:hover,
+body.dark-theme .btn-success:hover,
+body.dark-theme .btn-info:hover,
+body.dark-theme .btn-warning:hover,
+body.dark-theme .btn-danger:hover {
+    background-color: #5a6268; /* Darker shade for hover effect */
+}

@@ -18,6 +18,16 @@
             background-color: #17a2b8; /* Same color as Telnet button */
             border-color: #17a2b8;
         }
+        .btn-dark-theme {
+            background-color: #132433; /* Darker background color */
+            border-color: #343a40;
+            color: #ffffff;
+        }
+        .btn-custom {
+            background-color: #17a2b8; /* Same color as Telnet button */
+            border-color: #17a2b8;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="dark-theme">
@@ -31,30 +41,30 @@
             <div class="title mx-auto text-center">Network Status</div>
             <div class="buttons mx-auto">
                 <!-- Init and Stop Buttons -->
-                <button class="btn btn-primary me-2" id="init-button" onclick="toggleScan()" title="Scan Network">
+                <button class="btn btn-primary me-2 btn-dark-theme btn-custom" id="init-button" onclick="toggleScan()" title="Scan Network">
                     <i class="fas fa-search"></i>
                 </button>
-                <button class="btn btn-secondary me-2" id="ping-button" onclick="forceReloadAndPing()" title="Force Reload Config and Ping">
+                <button class="btn btn-secondary me-2 btn-dark-theme btn-custom" id="ping-button" onclick="forceReloadAndPing()" title="Force Reload Config and Ping">
                     <i class="fas fa-broadcast-tower"></i>
                 </button>
-                <button class="btn btn-danger" id="stop-button" onclick="stopScan()" style="display:none;" title="Stop Scan">
+                <button class="btn btn-danger btn-dark-theme btn-custom" id="stop-button" onclick="stopScan()" style="display:none;" title="Stop Scan">
                     <i class="fas fa-stop"></i>
                 </button>
                 <!-- Collapsible Form to Add New IP -->
-                <button class="btn btn-success" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm" title="Add Network">
+                <button class="btn btn-success btn-dark-theme btn-custom" id="addnetwork-button" type="button" data-bs-toggle="collapse" data-bs-target="#addNetworkForm" aria-expanded="false" aria-controls="addNetworkForm" title="Add Network">
                     <i class="fas fa-plus-circle"></i>
                 </button>
                 <!-- Download network.conf Button -->
-                <a class="btn btn-info" href="{{ url_for('download_network_conf') }}" download title="Download the current network configuration file">
+                <a class="btn btn-info btn-dark-theme btn-custom" href="{{ url_for('download_network_conf') }}" download title="Download the current network configuration file">
                     <i class="fas fa-download"></i>
                 </a>
                 <!-- Upload network.conf Button -->
                 <input type="file" id="fileInput" style="display: none;" onchange="uploadFile()">
-                <button type="button" class="btn btn-warning" onclick="document.getElementById('fileInput').click()" title="Upload a new network configuration file">
+                <button type="button" class="btn btn-warning btn-dark-theme btn-custom" onclick="document.getElementById('fileInput').click()" title="Upload a new network configuration file">
                     <i class="fas fa-upload"></i>
                 </button>
                 <!-- Config Button -->
-                <button class="btn btn-secondary" id="config-button" title="Configuration">
+                <button class="btn btn-secondary btn-dark-theme btn-custom" id="config-button" title="Configuration">
                     <i class="fas fa-cog"></i>
                 </button>
             </div>
@@ -162,10 +172,10 @@
                                     <input id="passwordInput{{ sanitized_name }}" type="password" class="form-control me-2 passwordInput" placeholder="Password" value="" />
                                     <input id="commandInput{{ sanitized_name }}" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
                                     <button id="sendCommandBtn{{ sanitized_name }}" class="btn btn-primary" style="display:none;">Send</button>
-                                    <button class="btn btn-info me-2 telnetBtn" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
+                                    <button class="btn btn-info me-2 telnetBtn btn-dark-theme btn-custom" id="telnetBtn{{ sanitized_name }}" onclick="toggleTelnet('{{ name }}')" title="Telnet">
                                         <i class="fas fa-terminal"></i>
                                     </button>
-                                    <button class="btn btn-secondary me-2" id="downloadLogBtn{{ sanitized_name }}" onclick="downloadTelnetLog('{{ sanitized_name }}')" title="Download Log" style="display: none;">
+                                    <button class="btn btn-secondary me-2 btn-dark-theme btn-custom" id="downloadLogBtn{{ sanitized_name }}" onclick="downloadTelnetLog('{{ sanitized_name }}')" title="Download Log" style="display: block;">
                                         <i class="fas fa-file-download"></i>
                                     </button>
                                 </div>
@@ -178,10 +188,10 @@
                                     <input id="sshPasswordInput{{ sanitized_name }}" type="password" class="form-control me-2 passwordInput" placeholder="Password" value="" />
                                     <input id="sshCommandInput{{ sanitized_name }}" type="text" class="form-control me-2" placeholder="Enter command..." style="display:none;" />
                                     <button id="sendSSHCommandBtn{{ sanitized_name }}" class="btn btn-primary" style="display:none;">Send</button>
-                                    <button class="btn btn-info me-2 sshBtn" id="sshBtn{{ sanitized_name }}" onclick="toggleSSH('{{ name }}')" title="SSH">
+                                    <button class="btn btn-info me-2 sshBtn btn-dark-theme btn-custom" id="sshBtn{{ sanitized_name }}" onclick="toggleSSH('{{ name }}')" title="SSH">
                                         <i class="fas fa-terminal"></i>
                                     </button>
-                                    <button class="btn btn-secondary me-2" id="downloadSSHLogBtn{{ sanitized_name }}" onclick="downloadSSHLog('{{ sanitized_name }}')" title="Download SSH Log" style="display: none;">
+                                    <button class="btn btn-secondary me-2 btn-dark-theme btn-custom" id="downloadSSHLogBtn{{ sanitized_name }}" onclick="downloadSSHLog('{{ sanitized_name }}')" title="Download SSH Log" style="display: block;">
                                         <i class="fas fa-file-download"></i>
                                     </button>
                                 </div>
@@ -254,7 +264,7 @@
             });
 
             // Request status updates
-            socket.emit('get_status', { load_subnets: true });
+            // socket.emit('get_status', { load_subnets: true });
         });
     </script>
 </body>

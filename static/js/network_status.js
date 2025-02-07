@@ -1,4 +1,10 @@
 function fetchNetworkStatus(reload = false) {
+    const caller = fetchNetworkStatus.caller ? fetchNetworkStatus.caller.name : "unknown";
+    
+    if (!caller) {
+        console.log('Caller is not set');
+        return;
+    }
     const url = reload ? "/get_status?reload=true" : "/get_status";
     fetch(url)
         .then(response => {
@@ -8,7 +14,7 @@ function fetchNetworkStatus(reload = false) {
             return response.json();
         })
         .then(data => {
-            console.log('Received data:', data);
+            //console.log('Received data:', data);
             if (data && typeof data === 'object') {
                 updateNetworkUI(data);
             } else {
@@ -206,10 +212,8 @@ function updateCountdown() {
         fetchNetworkStatus(); // Fetch network status when countdown reaches zero
     }
 }
-setInterval(updateCountdown, 1000);
 
 fetchNetworkStatus();
-let pingIntervalId = setInterval(fetchNetworkStatus, pingInterval);
 
 document.querySelectorAll('.passwordInput').forEach(input => {
     input.addEventListener('keypress', function(event) {
@@ -234,5 +238,33 @@ function updateCurrentDateTime() {
     dateTimeElement.classList.add('datetime-color'); // Add the class to the element
 }
 
+
+// Start Ping Timer using configured value
+let pingIntervalId = setInterval(() => {
+    fetchNetworkStatus();
+}, pingInterval);
+
 // Update the date and time every second
-setInterval(updateCurrentDateTime, 1000);
+let dateTimeIntervalId = setInterval(() => {
+    updateCurrentDateTime();
+}, 1000);
+
+// Clear existing intervals before setting new ones
+function resetIntervals() {
+    clearInterval(pingIntervalId);
+    clearInterval(dateTimeIntervalId);
+
+    pingIntervalId = setInterval(() => {
+        fetchNetworkStatus();
+    }, pingInterval);
+
+    dateTimeIntervalId = setInterval(() => {
+        //console.log('Updating countdown and DateTime...');
+        updateCountdown();
+        updateCurrentDateTime();
+    }, 1000);
+    
+}
+
+// Call resetIntervals whenever needed to restart the intervals
+resetIntervals();
