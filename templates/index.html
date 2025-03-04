@@ -113,7 +113,12 @@
                             <i class="fas fa-network-wired me-2"></i>
                             <span class="network-name" id="deviceNameLabel{{ sanitized_name }}">{{ name }}</span>
                             <input type="text" class="form-control rename-device-input ms-2" id="deviceNameInput{{ sanitized_name }}" style="display: none; width: auto;">
-                            <a href="http://{{ subnets[name] }}" target="_blank" class="network-ip ms-2">{{ subnets[name] }}</a>
+                            {% if ':' in subnets[name] %}
+                                {% set ip, port = subnets[name].split(':') %}
+                                <a href="http://{{ ip }}:{{ port }}" target="_blank" class="network-ip ms-2">{{ ip }}:{{ port }}</a>
+                            {% else %}
+                                <a href="http://{{ subnets[name] }}" target="_blank" class="network-ip ms-2">{{ subnets[name] }}</a>
+                            {% endif %}
                             <i class="fas fa-edit edit-icon ms-2" id="editIcon{{ sanitized_name }}" title="Edit Name" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Network Name"></i>
                         </div>
                         <div>
@@ -138,10 +143,16 @@
                     </div>
                     <div class="ping-log-info mt-2 d-flex justify-content-between">
                         <div class="time-ago">
-                            <!-- <script>
-                                const firstLogTime = new Date("{{ data.ping_logs[0].timestamp }}");
+                            <script>
+                                let lastUpLog = null;
+                                {% for log in data.ping_logs %}
+                                    {% if log.status == 'Up' %}
+                                        lastUpLog = "{{ log.timestamp }}";
+                                    {% endif %}
+                                {% endfor %}
+                                const lastSeenTime = new Date(lastUpLog);
                                 const currentTime = new Date();
-                                const timeDiff = (currentTime - firstLogTime) / 1000;
+                                const timeDiff = (currentTime - lastSeenTime) / 1000;
                                 let timeAgoText;
                                 if (timeDiff < 60) {
                                     timeAgoText = `${Math.round(timeDiff)} seconds ago`;
@@ -153,7 +164,7 @@
                                     timeAgoText = `${Math.round(timeDiff / 86400)} days ago`;
                                 }
                                 document.write(timeAgoText);
-                            </script> -->
+                            </script>
                         </div>
                         <div class="uptime-percentage">
                             <strong>Uptime:</strong> {{ data.uptime_percentage }}%

@@ -44,6 +44,13 @@ function updateNetworkUI(statuses) {
             const pingLogInfo = networkCard.querySelector('.ping-log-info');
 
             if (statusBadge) {
+                let lastUpLog = null;
+                data.ping_logs.forEach(log => {
+                    if (log.status === 'Up') {
+                        lastUpLog = log.timestamp;
+                    }
+                });
+
                 const latestPingLog = data.ping_logs[data.ping_logs.length - 1];
                 if (latestPingLog) {
                     const status = latestPingLog.status;
@@ -54,9 +61,14 @@ function updateNetworkUI(statuses) {
                     statusBadge.classList.remove('bg-success', 'bg-danger');
                     statusBadge.classList.add(statusClass);
                     statusBadge.textContent = status;
-                    statusBadge.textContent = `\n${latestPingLog.timestamp}`;
 
-                    //upsince.innerHTML = `<strong>Last Seen:</strong> ${latestPingLog.timestamp}`;
+                    if (status === 'Down' && lastUpLog) {
+                        statusBadge.textContent += `\nLast Up: ${lastUpLog}`;
+                    } else if (status === 'Down' && !lastUpLog) {
+                        statusBadge.textContent += `\nN/A`;
+                    } else {
+                        statusBadge.textContent += `\n${latestPingLog.timestamp}`;
+                    }
 
                     const statusText = networkCard.querySelector('.status-text');
                     if (statusText) {
@@ -137,17 +149,28 @@ function updateNetworkUI(statuses) {
             }
 
             if (pingLogInfo) {
-                const firstLog = data.ping_logs[0];
-                const timeDiff = (new Date() - new Date(firstLog.timestamp)) / 1000;
+                let lastUpLog = null;
+                data.ping_logs.forEach(log => {
+                    if (log.status === 'Up') {
+                        lastUpLog = log.timestamp;
+                    }
+                });
+                const lastSeenTime = lastUpLog ? new Date(lastUpLog) : null;
+                const currentTime = new Date();
+                const timeDiff = lastSeenTime ? (currentTime - lastSeenTime) / 1000 : null;
                 let timeAgo;
-                if (timeDiff < 60) {
-                    timeAgo = `${Math.round(timeDiff)} seconds ago`;
-                } else if (timeDiff < 3600) {
-                    timeAgo = `${Math.round(timeDiff / 60)} minutes ago`;
-                } else if (timeDiff < 86400) {
-                    timeAgo = `${Math.round(timeDiff / 3600)} hours ago`;
+                if (timeDiff !== null) {
+                    if (timeDiff < 60) {
+                        timeAgo = `${Math.round(timeDiff)} seconds ago`;
+                    } else if (timeDiff < 3600) {
+                        timeAgo = `${Math.round(timeDiff / 60)} minutes ago`;
+                    } else if (timeDiff < 86400) {
+                        timeAgo = `${Math.round(timeDiff / 3600)} hours ago`;
+                    } else {
+                        timeAgo = `${Math.round(timeDiff / 86400)} days ago`;
+                    }
                 } else {
-                    timeAgo = `${Math.round(timeDiff / 86400)} days ago`;
+                    timeAgo = "N/A";
                 }
 
                 pingLogInfo.innerHTML = `

@@ -27,11 +27,11 @@ telnet_sessions = {}
 # Dictionary to store SSH session for each user (using socket session id)
 ssh_sessions = {}
 
-# Example of network subnets
+# Example of network subnets with ports
 default_subnets = {
-    'Wi-Fi Router 1': '192.168.10.1',  # replace with actual IP for Router 1
-    'Wi-Fi Router 2': '192.168.11.1',  # replace with actual IP for Router 2
-    'Wi-Fi Router 3': '192.168.12.1',  # replace with actual IP for Router 3
+    'Wi-Fi Router 1': {'ip': '192.168.10.1', 'port': 80},  # replace with actual IP and port for Router 1
+    'Wi-Fi Router 2': {'ip': '192.168.11.1', 'port': 80},  # replace with actual IP and port for Router 2
+    'Wi-Fi Router 3': {'ip': '192.168.12.1', 'port': 80},  # replace with actual IP and port for Router 3
 }
 
 # Path to the network.conf file
@@ -90,6 +90,22 @@ def ping_ip(ip):
 # Variable to control scanning
 scanning = True
 
+# Variable to control the ping interval (default to 60 seconds)
+ping_interval = 60
+
+# Function to periodically ping devices
+def periodic_ping():
+    global scanning, ping_interval
+    while scanning:
+        get_network_status(load_subnets_flag=False)
+        time.sleep(ping_interval)
+
+# Function to start the periodic ping thread
+def start_periodic_ping():
+    ping_thread = threading.Thread(target=periodic_ping)
+    ping_thread.daemon = True
+    ping_thread.start()
+
 # Function to scan a subnet for active clients
 def scan_subnet(subnet, session_id, scanned_subnets):
     global scanning
@@ -134,7 +150,7 @@ def get_network_status(load_subnets_flag):
         subnets = load_subnets()  # Reload the subnets from the configuration file
         # Sync statuses with the new subnets list
         new_statuses = {}
-        for name, ip in subnets.items():
+        for name, info in subnets.items():
             if name in statuses:
                 new_statuses[name] = statuses[name]
             
@@ -143,7 +159,11 @@ def get_network_status(load_subnets_flag):
     # Remove any statuses not in the subnets list
     statuses = {name: status for name, status in statuses.items() if name in subnets}
 
-    for name, ip in subnets.items():
+    for name, info in subnets.items():
+        if ':' in info:
+            ip = info.split(':')[0]
+        else:
+            ip = info
         response_time = ping_ip(ip)
         status = "Up" if response_time is not None else "Down"
         
@@ -198,6 +218,7 @@ def add_network():
         data = request.get_json()
         network_name = data.get('name')
         network_ip = data.get('ip')
+        network_port = data.get('port', 80)  # Default to port 80 if not provided
 
         # Load the current subnets from the file
         subnets = load_subnets()
@@ -207,7 +228,7 @@ def add_network():
             return jsonify({"success": False, "message": "Network already exists."})
 
         # Add the new network to the subnets dictionary
-        subnets[network_name] = network_ip
+        subnets[network_name] = {'ip': network_ip, 'port': network_port}
 
         # Save the updated subnets back to the network.conf
         save_subnets(subnets)
@@ -438,7 +459,7 @@ def start_ssh(data):
 
 @app.route('/get_subnets')
 def get_subnets():
-    """Return list of available routers and their IPs."""
+    """Return list of available routers and their IPs and ports."""
     return jsonify(load_subnets())
 
 @app.route('/rename_device', methods=['POST'])
@@ -502,6 +523,20 @@ def upload_network_conf():
         file.save(os.path.join(app.root_path, filename))
         return jsonify({"success": True})
     return jsonify({"success": False, "message": "File not allowed"})
+
+@app.route('/set_ping_interval', methods=['POST'])
+def set_ping_interval():
+    global ping_interval
+    try:
+        data = request.get_json()
+        interval = data.get('interval')
+        if interval and isinstance(interval, int) and interval > 0:
+            ping_interval = interval
+            return jsonify({"success": True, "interval": ping_interval})
+        else:
+            return jsonify({"success": False, "message": "Invalid interval"})
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)})
 
 @app.route("/")
 def index():
@@ -602,4 +637,5 @@ def handle_stop_scan():
     scanning = False
 
 if __name__ == "__main__":
+    start_periodic_ping()
     socketio.run(app, host='0.0.0.0', port=5000, debug=True)
