@@ -12,6 +12,7 @@ This project provides a web-based interface to monitor the status of various net
 - **Real-Time Ping Logs**: Track the ping logs for each router, with timestamps and response times.
 - **Dynamic Network Updates**: The app checks and updates network status at a configurable interval, displaying the current status for each router.
 - **Configurable Ping Interval**: Set the ping interval dynamically through the web UI (default is 60 seconds).
+- **Background Ping Thread**: A background thread periodically pings devices to keep the status updated.
 - **Countdown Timer**: View the remaining time until the next ping update.
 - **Subnets Management**: Automatically adds missing subnets to the `network.conf` file using the `route -n` (Linux/macOS) or `route print` (Windows) command to detect network configurations.
 - **Scanning Subnets for Devices**: Scans each subnet for active devices and logs the active IPs found during the scan.
@@ -159,3 +160,7 @@ Solana: EHi8PRa4t5Ge3EJ6GJF5omhpktFQdPdSeJKx78BCnJMP
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+## Acknowledgements
+
+This project was generated with the help of GitHub Copilot.
