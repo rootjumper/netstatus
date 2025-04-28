@@ -149,32 +149,39 @@ function updateNetworkUI(statuses) {
             }
 
             if (pingLogInfo) {
-                let lastUpLog = null;
+                let lastDownLog = null;
+                let firstUpLog = null;
+
                 data.ping_logs.forEach(log => {
-                    if (log.status === 'Up') {
-                        lastUpLog = log.timestamp;
+                    if (log.status === 'Down') {
+                        lastDownLog = log.timestamp;
+                    }
+                    if (!firstUpLog && log.status === 'Up') {
+                        firstUpLog = log.timestamp; // Capture the first "Up" timestamp
                     }
                 });
-                const lastSeenTime = lastUpLog ? new Date(lastUpLog) : null;
-                const currentTime = new Date();
-                const timeDiff = lastSeenTime ? (currentTime - lastSeenTime) / 1000 : null;
-                let timeAgo;
-                if (timeDiff !== null) {
-                    if (timeDiff < 60) {
-                        timeAgo = `${Math.round(timeDiff)} seconds ago`;
-                    } else if (timeDiff < 3600) {
-                        timeAgo = `${Math.round(timeDiff / 60)} minutes ago`;
-                    } else if (timeDiff < 86400) {
-                        timeAgo = `${Math.round(timeDiff / 3600)} hours ago`;
-                    } else {
-                        timeAgo = `${Math.round(timeDiff / 86400)} days ago`;
+
+                let upSinceDuration = "N/A";
+                if (lastDownLog || firstUpLog) {
+                    const referenceTime = lastDownLog ? new Date(lastDownLog) : new Date(firstUpLog);
+                    const currentTime = new Date();
+                    const timeDiff = (currentTime - referenceTime) / 1000;
+
+                    if (timeDiff > 0) {
+                        if (timeDiff < 60) {
+                            upSinceDuration = `${Math.round(timeDiff)} seconds`;
+                        } else if (timeDiff < 3600) {
+                            upSinceDuration = `${Math.round(timeDiff / 60)} minutes`;
+                        } else if (timeDiff < 86400) {
+                            upSinceDuration = `${Math.round(timeDiff / 3600)} hours`;
+                        } else {
+                            upSinceDuration = `${Math.round(timeDiff / 86400)} days`;
+                        }
                     }
-                } else {
-                    timeAgo = "N/A";
                 }
 
                 pingLogInfo.innerHTML = `
-                    <div class="time-ago">${timeAgo}</div>
+                    <div class="up-since">${upSinceDuration}</div>
                     <div class="uptime-percentage"><strong>Uptime:</strong> ${uptimePercentage}%</div>
                     <div class="now">Now</div>
                 `;

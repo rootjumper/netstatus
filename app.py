@@ -3,7 +3,7 @@ monkey.patch_all()
 
 import threading
 import subprocess
-import telnetlib
+import telnetlib3
 import json
 import platform
 import os
