@@ -63,11 +63,11 @@ function updateNetworkUI(statuses) {
                     statusBadge.textContent = status;
 
                     if (status === 'Down' && lastUpLog) {
-                        statusBadge.textContent += `\nLast Up: ${lastUpLog}`;
+                        statusBadge.textContent += `\nLast Up: ${formatToLocalTime(lastUpLog)}`;
                     } else if (status === 'Down' && !lastUpLog) {
                         statusBadge.textContent += `\nN/A`;
                     } else {
-                        statusBadge.textContent += `\n${latestPingLog.timestamp}`;
+                        statusBadge.textContent += `\n${formatToLocalTime(latestPingLog.timestamp)}`;
                     }
 
                     const statusText = networkCard.querySelector('.status-text');
@@ -84,7 +84,8 @@ function updateNetworkUI(statuses) {
                 const pingLogs = data.ping_logs.slice(-maxPingLogs); // Get the last 'maxPingLogs' entries
 
                 pingLogContainer.innerHTML = pingLogs.map((log, index) => {
-                    const timeDiff = (new Date() - new Date(log.timestamp)) / 1000;
+                    const localTimestamp = new Date(new Date(log.timestamp).getTime() - new Date().getTimezoneOffset() * 60000); // Adjust to local timezone
+                    const timeDiff = (new Date() - localTimestamp) / 1000;
                     let timeAgo;
                     if (timeDiff < 60) {
                         timeAgo = `${Math.round(timeDiff)} seconds ago`;
@@ -99,7 +100,7 @@ function updateNetworkUI(statuses) {
                     return `
                         <div class="ping-log-bar ${log.status === 'Up' ? 'success' : 'danger'}" style="order: ${maxPingLogs - index}">
                             <div class="tooltip">
-                                <strong>Timestamp:</strong> ${log.timestamp}<br>
+                                <strong>Timestamp:</strong> ${formatToLocalTime(log.timestamp)}<br>
                                 <strong>Status:</strong> ${log.status}<br>
                                 <strong>Response Time:</strong> ${log.response_time} ms<br>
                                 <strong>Time Ago:</strong> ${timeAgo}
@@ -154,16 +155,16 @@ function updateNetworkUI(statuses) {
 
                 data.ping_logs.forEach(log => {
                     if (log.status === 'Down') {
-                        lastDownLog = log.timestamp;
+                        lastDownLog = new Date(new Date(log.timestamp).getTime() - new Date().getTimezoneOffset() * 60000); // Adjust to local timezone
                     }
                     if (!firstUpLog && log.status === 'Up') {
-                        firstUpLog = log.timestamp; // Capture the first "Up" timestamp
+                        firstUpLog = new Date(new Date(log.timestamp).getTime() - new Date().getTimezoneOffset() * 60000); // Adjust to local timezone
                     }
                 });
 
                 let upSinceDuration = "N/A";
                 if (lastDownLog || firstUpLog) {
-                    const referenceTime = lastDownLog ? new Date(lastDownLog) : new Date(firstUpLog);
+                    const referenceTime = lastDownLog || firstUpLog;
                     const currentTime = new Date();
                     const timeDiff = (currentTime - referenceTime) / 1000;
 
@@ -268,6 +269,11 @@ function updateCurrentDateTime() {
     dateTimeElement.classList.add('datetime-color'); // Add the class to the element
 }
 
+function formatToLocalTime(timestamp) {
+    const date = new Date(timestamp);
+    const localTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000); // Adjust for timezone offset
+    return localTime.toLocaleString(); // Converts to local time string
+}
 
 // Start Ping Timer using configured value
 let pingIntervalId = setInterval(() => {

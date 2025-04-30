@@ -14,6 +14,7 @@ from flask import Flask, request, render_template, jsonify, send_file, redirect,
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 from werkzeug.utils import secure_filename
 import paramiko
+from datetime import datetime
 
 # Configure logging
 logging.basicConfig(level=logging.ERROR)
@@ -143,6 +144,54 @@ def scan_subnet(subnet, session_id, scanned_subnets):
     scanned_subnets.add(subnet)
     return active_clients
 
+# Directory for storing daily ping logs
+log_directory = os.path.join(app.root_path, 'logs')
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+# Function to save ping logs to a daily log file
+def save_ping_logs_to_file(name, log_entry):
+    try:
+        # Get the current date for the log file name
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        log_file_path = os.path.join(log_directory, f'ping_logs_{current_date}.json')
+
+        # Read existing logs if the file exists
+        if os.path.exists(log_file_path):
+            with open(log_file_path, 'r') as log_file:
+                daily_logs = json.load(log_file)
+        else:
+            daily_logs = {}
+
+        # Append the new log entry to the respective device's logs
+        if name not in daily_logs:
+            daily_logs[name] = []
+        daily_logs[name].append(log_entry)
+
+        # Save the updated logs back to the file
+        with open(log_file_path, 'w') as log_file:
+            json.dump(daily_logs, log_file, indent=4)
+
+    except Exception as e:
+        logging.error(f"Error saving ping logs to file: {e}")
+
+# Function to load the log of the day
+def load_daily_logs():
+    try:
+        # Get the current date for the log file name
+        current_date = datetime.now().strftime('%Y-%m-%d')
+        log_file_path = os.path.join(log_directory, f'ping_logs_{current_date}.json')
+
+        # Read the log file if it exists
+        if os.path.exists(log_file_path):
+            with open(log_file_path, 'r') as log_file:
+                return json.load(log_file)
+        else:
+            return {}
+    except Exception as e:
+        logging.error(f"Error loading daily logs: {e}")
+        return {}
+
 # Function to generate and update the network status
 def get_network_status(load_subnets_flag):
     global subnets, statuses
@@ -156,6 +205,9 @@ def get_network_status(load_subnets_flag):
             
         statuses = new_statuses
 
+    # Load the log of the day
+    daily_logs = load_daily_logs()
+
     # Remove any statuses not in the subnets list
     statuses = {name: status for name, status in statuses.items() if name in subnets}
 
@@ -166,47 +218,41 @@ def get_network_status(load_subnets_flag):
             ip = info
         response_time = ping_ip(ip)
         status = "Up" if response_time is not None else "Down"
-        
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+        log_entry = {
+            "timestamp": timestamp,
+            "ip": ip,
+            "status": status,
+            "response_time": round(response_time, 2) if response_time is not None else "N/A"
+        }
+
+        # Save the log entry to a daily log file
+        save_ping_logs_to_file(name, log_entry)
+
+        # Merge daily logs into statuses
+        if name in daily_logs:
+            statuses[name] = statuses.get(name, {"ping_logs": []})
+            statuses[name]["ping_logs"] = daily_logs[name] + statuses[name]["ping_logs"]
+
         # Define the 'last_seen' time: if the status is "Up", set the current time as 'last_seen'
         if name in statuses:
-            last_seen_time = statuses[name]['last_seen']
+            last_seen_time = statuses[name].get('last_seen', "N/A")
         else:
             last_seen_time = "N/A"
 
         if status == "Up":
-            if name in statuses:
-                last_seen_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms' if status == "Up" else "N/A"
-            else:
-                last_seen_time = time.strftime("%Y-%m-%d %H:%M:%S") + 'ms'
+            last_seen_time = time.strftime("%Y-%m-%d %H:%M:%S")
         else:
             last_seen_time = "N/A"
 
-        # If the device is already in the statuses dictionary, update its existing data
-        if name in statuses:
-            statuses[name]['status'] = status
-            statuses[name]['last_seen'] = last_seen_time
-        else:
-            statuses[name] = {
-                "status": status,
-                "last_seen": last_seen_time,
-                "ping_logs": []
-            }
-
-        # Add a new ping log entry (with timestamp, IP, response time, and status)
-        if response_time is not None:
-            statuses[name]["ping_logs"].append({
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                "ip": ip,
-                "status": status,
-                "response_time": round(response_time, 2)
-            })
-        else:
-            statuses[name]["ping_logs"].append({
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-                "ip": ip,
-                "status": "Down",
-                "response_time": "N/A"
-            })
+        # Update statuses
+        statuses[name] = statuses.get(name, {})
+        statuses[name].update({
+            "status": status,
+            "last_seen": last_seen_time,
+            "ping_logs": statuses[name].get("ping_logs", []) + [log_entry]
+        })
 
         # Cap the ping logs to a maximum of 200 items
         if len(statuses[name]["ping_logs"]) > 200:

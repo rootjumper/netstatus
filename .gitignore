@@ -2,3 +2,4 @@ venv/
 network.conf
 *.conf
 __pycache__/
+logs/*

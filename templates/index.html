@@ -144,26 +144,35 @@
                     <div class="ping-log-info mt-2 d-flex justify-content-between">
                         <div class="time-ago">
                             <script>
-                                let lastUpLog = null;
+                                let lastDownLog = null;
+                                let firstUpAfterDown = null;
                                 {% for log in data.ping_logs %}
-                                    {% if log.status == 'Up' %}
-                                        lastUpLog = "{{ log.timestamp }}";
+                                    {% if log.status == 'Down' %}
+                                        lastDownLog = "{{ log.timestamp }}";
+                                    {% endif %}
+                                    {% if log.status == 'Up' and lastDownLog %}
+                                        firstUpAfterDown = "{{ log.timestamp }}";
+                                        break;
                                     {% endif %}
                                 {% endfor %}
-                                const lastSeenTime = new Date(lastUpLog);
-                                const currentTime = new Date();
-                                const timeDiff = (currentTime - lastSeenTime) / 1000;
-                                let timeAgoText;
-                                if (timeDiff < 60) {
-                                    timeAgoText = `${Math.round(timeDiff)} seconds ago`;
-                                } else if (timeDiff < 3600) {
-                                    timeAgoText = `${Math.round(timeDiff / 60)} minutes ago`;
-                                } else if (timeDiff < 86400) {
-                                    timeAgoText = `${Math.round(timeDiff / 3600)} hours ago`;
+                                if (lastDownLog && firstUpAfterDown) {
+                                    const downTime = new Date(lastDownLog);
+                                    const upTime = new Date(firstUpAfterDown);
+                                    const timeDiff = (upTime - downTime) / 1000;
+                                    let timeAgoText;
+                                    if (timeDiff < 60) {
+                                        timeAgoText = `${Math.round(timeDiff)} seconds`;
+                                    } else if (timeDiff < 3600) {
+                                        timeAgoText = `${Math.round(timeDiff / 60)} minutes`;
+                                    } else if (timeDiff < 86400) {
+                                        timeAgoText = `${Math.round(timeDiff / 3600)} hours`;
+                                    } else {
+                                        timeAgoText = `${Math.round(timeDiff / 86400)} days`;
+                                    }
+                                    document.write(`Time Between Down and Up: ${timeAgoText}`);
                                 } else {
-                                    timeAgoText = `${Math.round(timeDiff / 86400)} days ago`;
+                                    document.write("N/A");
                                 }
-                                document.write(timeAgoText);
                             </script>
                         </div>
                         <div class="uptime-percentage">
