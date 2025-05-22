@@ -88,6 +88,14 @@ def ping_ip(ip):
         logging.error(f"Error pinging {ip}: {e}")
         return None
 
+# Function to ping an IP with up to 3 retries if failed
+def ping_ip_with_retries(ip, max_retries=3):
+    for attempt in range(max_retries):
+        response_time = ping_ip(ip)
+        if response_time is not None:
+            return response_time  # Success
+    return None  # Failed after retries
+
 # Variable to control scanning
 scanning = True
 
@@ -98,8 +106,11 @@ ping_interval = 60
 def periodic_ping():
     global scanning, ping_interval
     while scanning:
+        start_time = time.time()
         get_network_status(load_subnets_flag=False)
-        time.sleep(ping_interval)
+        elapsed = time.time() - start_time
+        sleep_time = max(0, ping_interval - elapsed)
+        time.sleep(sleep_time)
 
 # Function to start the periodic ping thread
 def start_periodic_ping():
@@ -202,7 +213,6 @@ def get_network_status(load_subnets_flag):
         for name, info in subnets.items():
             if name in statuses:
                 new_statuses[name] = statuses[name]
-            
         statuses = new_statuses
 
     # Load the log of the day
@@ -216,7 +226,8 @@ def get_network_status(load_subnets_flag):
             ip = info.split(':')[0]
         else:
             ip = info
-        response_time = ping_ip(ip)
+        # Use the retry logic here
+        response_time = ping_ip_with_retries(ip, max_retries=3)
         status = "Up" if response_time is not None else "Down"
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
