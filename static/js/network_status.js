@@ -150,33 +150,59 @@ function updateNetworkUI(statuses) {
             }
 
             if (pingLogInfo) {
-                let lastDownLog = null;
-                let firstUpLog = null;
-
-                data.ping_logs.forEach(log => {
-                    if (log.status === 'Down') {
-                        lastDownLog = new Date(new Date(log.timestamp).getTime() - new Date().getTimezoneOffset() * 60000); // Adjust to local timezone
-                    }
-                    if (!firstUpLog && log.status === 'Up') {
-                        firstUpLog = new Date(new Date(log.timestamp).getTime() - new Date().getTimezoneOffset() * 60000); // Adjust to local timezone
-                    }
-                });
-
+                const logs = data.ping_logs;
                 let upSinceDuration = "N/A";
-                if (lastDownLog || firstUpLog) {
-                    const referenceTime = lastDownLog || firstUpLog;
-                    const currentTime = new Date();
-                    const timeDiff = (currentTime - referenceTime) / 1000;
+                let now = new Date();
 
-                    if (timeDiff > 0) {
-                        if (timeDiff < 60) {
-                            upSinceDuration = `${Math.round(timeDiff)} seconds`;
-                        } else if (timeDiff < 3600) {
-                            upSinceDuration = `${Math.round(timeDiff / 60)} minutes`;
-                        } else if (timeDiff < 86400) {
-                            upSinceDuration = `${Math.round(timeDiff / 3600)} hours`;
-                        } else {
-                            upSinceDuration = `${Math.round(timeDiff / 86400)} days`;
+                if (logs.length > 0) {
+                    const latestStatus = logs[logs.length - 1].status;
+
+                    if (latestStatus === 'Up') {
+                        // Find the last transition from Down to Up
+                        let lastUpIndex = -1;
+                        for (let i = logs.length - 1; i >= 0; i--) {
+                            if (logs[i].status === 'Up') {
+                                lastUpIndex = i;
+                            } else {
+                                break;
+                            }
+                        }
+                        // Find the Down before this Up streak
+                        let lastDownIndex = lastUpIndex - 1;
+                        while (lastDownIndex >= 0 && logs[lastDownIndex].status !== 'Down') {
+                            lastDownIndex--;
+                        }
+                        let upSinceTime = new Date(new Date(logs[lastUpIndex].timestamp).getTime() - new Date().getTimezoneOffset() * 60000);
+                        let timeDiff = (now - upSinceTime) / 1000;
+                        if (timeDiff > 0) {
+                            if (timeDiff < 60) {
+                                upSinceDuration = `${Math.round(timeDiff)} seconds`;
+                            } else if (timeDiff < 3600) {
+                                upSinceDuration = `${Math.round(timeDiff / 60)} minutes`;
+                            } else if (timeDiff < 86400) {
+                                upSinceDuration = `${Math.round(timeDiff / 3600)} hours`;
+                            } else {
+                                upSinceDuration = `${Math.round(timeDiff / 86400)} days`;
+                            }
+                        }
+                    } else if (latestStatus === 'Down') {
+                        // Find the first Down in the current Down streak
+                        let firstDownIndex = logs.length - 1;
+                        while (firstDownIndex >= 0 && logs[firstDownIndex].status === 'Down') {
+                            firstDownIndex--;
+                        }
+                        let downSinceTime = new Date(new Date(logs[firstDownIndex + 1].timestamp).getTime() - new Date().getTimezoneOffset() * 60000);
+                        let timeDiff = (now - downSinceTime) / 1000;
+                        if (timeDiff > 0) {
+                            if (timeDiff < 60) {
+                                upSinceDuration = `${Math.round(timeDiff)} seconds`;
+                            } else if (timeDiff < 3600) {
+                                upSinceDuration = `${Math.round(timeDiff / 60)} minutes`;
+                            } else if (timeDiff < 86400) {
+                                upSinceDuration = `${Math.round(timeDiff / 3600)} hours`;
+                            } else {
+                                upSinceDuration = `${Math.round(timeDiff / 86400)} days`;
+                            }
                         }
                     }
                 }
